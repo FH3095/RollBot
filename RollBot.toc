@@ -1,0 +1,8 @@
+## Interface: 70200
+## Title: Roll Bot
+## Notes: Addon to automate /roll in raids.
+## Author: FH3095
+## Version: 1.0.0
+## X-Curse-Project-ID: 269026
+## SavedVariables: RollBot
+
