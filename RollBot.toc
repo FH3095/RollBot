@@ -4,5 +4,7 @@
 ## Author: FH3095
 ## Version: 1.0.0
 ## X-Curse-Project-ID: 269026
-## SavedVariables: RollBot
+## SavedVariables: RollBotDB
 
+embed.xml
+Core.lua
