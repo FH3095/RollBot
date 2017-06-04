@@ -35,10 +35,10 @@ end
 
 function RB:OnInitialize()
 	self.com = LibStub("AceComm-3.0")
+	self.l = LibStub("AceLocale-3.0"):GetLocale("RollBot", false)
 	self.db = LibStub("AceDB-3.0"):New(ADDON_NAME .. "DB", self:GenerateDefaultOptions(), true)
-	local config = LibStub("AceConfig-3.0")
-	config:RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBot", "RB"})
-	local configFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(ADDON_NAME)
+	LibStub("AceConfig-3.0"):RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBot", "RB"})
+	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(ADDON_NAME)
 end
 
 function RB:GenerateDefaultOptions()
@@ -90,7 +90,7 @@ function RB:GenerateOptions()
 					name	= "Roll",
 					min		= 1,
 					max		= 1000000,
-					softMax	= 1000,
+					softMax	= 100,
 					step	= 1,
 				}
 			}
@@ -129,7 +129,7 @@ function RB:GenerateOptions()
 end
 
 function RB:SetBasicOption(info, value)
-	log("Set option value", info[#info], value)
+	log("Set option", info[#info], value)
 	self.db.profile[info[#info]] = value
 	if info[#info] == "numRollOptions" then
 		local config = LibStub("AceConfig-3.0")
@@ -144,6 +144,7 @@ end
 function RB:SetRollOption(info, value)
 	local rollName = info[#info-1]
 	local rollOption = info[#info]
+	log("Set roll option", rollName, rollOption, value)
 	if self.db.profile.rolls[rollName] == nil then
 		self.db.profile.rolls[rollName] = {}
 	end
