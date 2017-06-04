@@ -1,6 +1,14 @@
 
 local ADDON_NAME = "RollBot"
+local VERSION = "1.0.0"
 local IS_DEBUG = true
+local ADDON_MSGS = {
+	lootOptionsReq = ADDON_NAME .. "1",
+	lootOptionsResp = ADDON_NAME .. "2",
+	startRoll =  ADDON_NAME .. "3",
+	getVersionReq = ADDON_NAME .. "4",
+	getVersionResp = ADDON_NAME .. "5",
+}
 local RB = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME)
 RollBot = RB
 
@@ -34,11 +42,61 @@ local function log(str, ...)
 end
 
 function RB:OnInitialize()
-	self.com = LibStub("AceComm-3.0")
+	self.vars = {
+		masterLooter = nil,
+	}
 	self.l = LibStub("AceLocale-3.0"):GetLocale("RollBot", false)
+	self.timer = LibStub("AceTimer-3.0")
 	self.db = LibStub("AceDB-3.0"):New(ADDON_NAME .. "DB", self:GenerateDefaultOptions(), true)
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBot", "RB"})
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(ADDON_NAME)
+
+	self.com = LibStub("AceComm-3.0")
+	local addonCommandFunc = function(prefix, message, distribution, sender)
+		RB:comAddonMsg(prefix, message, distribution, sender)
+	end
+	for k,v in pairs(ADDON_MSGS) do
+		self.com:RegisterComm(v, addonCommandFunc)
+	end
+
+	self.events = LibStub("AceEvent-3.0")
+	self.events:RegisterEvent("GROUP_ROSTER_UPDATE", function() RB:GROUP_ROSTER_UPDATE() end)
+end
+
+function RB:comAddonMsg(prefix, message, distribution, sender)
+	log("ComAddonMsg", message, distribution, sender)
+end
+
+function RB:isMasterLooterActive()
+	local lootMethod = GetLootMethod()
+	if IsInRaid() and lootMethod == "master" then
+		return true
+	end
+	return false
+end
+
+function RB:isMyselfMasterLooter()
+	local lootMethod, masterLooterPartyId = GetLootMethod()
+	if IsInRaid() and lootMethod == "master" and masterLooterPartyId == 0 then
+		return true
+	end
+	return false
+end
+
+function RB:getMasterLooter()
+	if not self:isMasterLooterActive() then
+		return nil
+	end
+	if self:isMyselfMasterLooter() then
+		return UnitName("player", true)
+	end
+	local _, _, masterLooterRaidId = GetLootMethod()
+	local ret = GetRaidRosterInfo(masterLooterRaidId)
+	return ret
+end
+
+function RB:GROUP_ROSTER_UPDATE()
+	log("GroupRosterUpdate")
 end
 
 function RB:GenerateDefaultOptions()
@@ -122,7 +180,7 @@ function RB:GenerateOptions()
 			rolls = rolls,
 		},
 	}
-	log("Options table", ret)
+	--log("Options table", ret)
 	ret.handler = self
 	ret.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 	return ret
