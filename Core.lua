@@ -1,5 +1,6 @@
 
 local ADDON_NAME = "RollBot"
+local IS_DEBUG = true
 local RB = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME)
 RollBot = RB
 
@@ -21,6 +22,9 @@ local function objToString(obj)
 end
 
 local function log(str, ...)
+	if not IS_DEBUG then
+		return
+	end
 	str = str .. ": "
 	for i=1,select('#', ...) do
 		local val = select(i ,...)
