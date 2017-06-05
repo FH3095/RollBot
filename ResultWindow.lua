@@ -11,3 +11,7 @@ function RB:resultAddRoll(name, roll, rollMin, rollMax)
 	-- TODO implement
 	log("ResultAddRoll", name, roll, rollMin, rollMax)
 end
+
+function RB:resultClearRolls()
+	-- TODO implement
+end
