@@ -17,6 +17,9 @@ function RB:openResultWindow()
 	btn:SetWidth(170)
 	btn:SetText("Button !")
 	btn:SetCallback("OnClick", function() print("Click!") end)
+	-- Usually dont use .frame, but I treat this as an exception
+	btn:SetCallback("OnEnter", function() GameTooltip:SetOwner(btn.frame, "ANCHOR_TOPLEFT"); GameTooltip:SetHyperlink("item:16846:0:0:0:0:0:0:0"); GameTooltip:Show() end)
+	btn:SetCallback("OnLeave", function() GameTooltip:Hide() end)
 	-- Add the button to the container
 	f:AddChild(btn)
 end
