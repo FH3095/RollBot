@@ -62,7 +62,7 @@ function RB:GenerateOptions()
 	end
 
 	local ret = {
-		name = ADDON_NAME,
+		name = RB.consts.ADDON_NAME,
 		type = "group",
 		args = {
 			basic = {
@@ -101,7 +101,7 @@ function RB:SetBasicOption(info, value)
 	self.db.profile[info[#info]] = value
 	if info[#info] == "numRollOptions" then
 		local config = LibStub("AceConfig-3.0")
-		config:RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBot", "RB"})
+		config:RegisterOptionsTable(RB.consts.ADDON_NAME, self:GenerateOptions(), {"RollBot", "RB"})
 	end
 end
 

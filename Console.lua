@@ -19,7 +19,7 @@ function RB:consoleParseCommand(msg, editbox)
 end
 
 function RB:consolePrintHelp()
-	self.console:Printf("%s: Available commands:", self.consts.ADDON_NAME)
+	self.console:Printf("%s: Available commands:", self.consts.ADDON_NAME_COLORED)
 	self.console:Printf("versions")
 	self.console:Printf("    Requests version from everyone in the raid, waits 7 seconds for response and then prints the versions")
 	self.console:Printf("startroll ItemLink")
@@ -34,7 +34,7 @@ function RB:consoleStartRoll(itemLink)
 	end
 	local success, ownRank = self:getOwnRaidInfo()
 	if success == nil then
-		self:consolePrintError("Cant start roll while not in a raid")
+		self:consolePrintError("Not in raid")
 	end
 	local chatMsgType = "RAID"
 	if ownRank > 0 then
@@ -45,8 +45,12 @@ function RB:consoleStartRoll(itemLink)
 end
 
 function RB:consolePrintVersions()
-	-- TODO: Change GetUnitName to get info from raid roster
-	self.vars.versions[GetUnitName("player",true)] = self.consts.VERSION
+	local ownName = RB:getOwnRaidInfo()
+	if ownName == nil then
+		self:consolePrintError("Not in raid")
+		return
+	end
+	self.vars.versions[ownName] = self.consts.VERSION
 	local versions = {}
 	for k,v in pairs(self.vars.versions) do
 		if versions[v] == nil then
@@ -57,13 +61,13 @@ function RB:consolePrintVersions()
 		versions[v] = versions[v] .. k
 	end
 	table.sort(versions)
-	self.console:Printf("%s: Versions in raid:", self.consts.ADDON_NAME)
+	self.console:Printf("%s: Versions in raid:", self.consts.ADDON_NAME_COLORED)
 	for k,v in pairs(versions) do
 		self.console:Printf("%s: %s", k, v)
 	end
 end
 
 function RB:consolePrintError(str, ...)
-	str = "RollBot: Error: " .. str
+	str = self.consts.ADDON_NAME_COLORED .. " " .. str
 	print(str:format(...))
 end

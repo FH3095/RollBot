@@ -1,5 +1,6 @@
 
 local RB = RollBot
+local log = RollBotDebug.log
 
 function RB:isUserMasterLooter(user)
 	-- TODO: Implement
@@ -44,7 +45,7 @@ function RB:getOwnRaidInfo()
 	if ownRaidId == nil then
 		return nil
 	end
-	local ret = GetRaidRosterInfo(ownRaidId)
+	return GetRaidRosterInfo(ownRaidId)
 end
 
 function RB:sendMasterLooterSettings()
