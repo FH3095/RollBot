@@ -48,6 +48,7 @@ function RB:consoleStartRoll(itemLink)
 end
 
 function RB:consolePrintVersions()
+	-- TODO: Change GetUnitName to get info from raid roster
 	self.vars.versions[GetUnitName("player",true)] = self.consts.VERSION
 	local versions = {}
 	for k,v in pairs(self.vars.versions) do

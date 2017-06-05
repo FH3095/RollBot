@@ -57,11 +57,20 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 	log("ComAddonMsg", message, distribution, sender)
 	if prefix == ADDON_MSGS.lootOptionsReq and self:isMyselfMasterLooter() then
 		self:sendMasterLooterSettings()
+	elseif prefix == ADDON_MSGS.lootOptionsResp and self:isUserMasterLooter(sender) then
+	-- TODO implement
+	elseif prefix == ADDON_MSGS.startRoll and self:isUserMasterLooter(sender) then
+	-- TODO implement
 	elseif prefix == ADDON_MSGS.getVersionReq then
 		self.com:SendCommMessage(ADDON_MSGS.getVersionResp, VERSION, "RAID")
 	elseif prefix == ADDON_MSGS.getVersionResp then
 		self.vars.versions[sender] = message
 	end
+end
+
+function RB:isUserMasterLooter(user)
+	-- TODO: Implement
+	return false
 end
 
 function RB:isMasterLooterActive()
@@ -84,9 +93,6 @@ function RB:getMasterLooter()
 	if not self:isMasterLooterActive() then
 		return nil
 	end
-	if self:isMyselfMasterLooter() then
-		return UnitName("player", true)
-	end
 	local _, _, masterLooterRaidId = GetLootMethod()
 	local ret = GetRaidRosterInfo(masterLooterRaidId)
 	return ret
@@ -97,6 +103,7 @@ function RB:checkMasterLooterChanged()
 	if self.vars.masterLooter == self:getMasterLooter() then
 		return
 	end
+	self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
 end
 
 function RB:sendMasterLooterSettings()
