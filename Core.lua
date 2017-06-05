@@ -66,6 +66,7 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 			self:consolePrintError("Cant deserialize roll data: %s", data)
 			return
 		end
+		log("ComAddonMsg: New MasterLooter options", data, self.vars.masterLooter, self:getMasterLooter())
 		self.vars.masterLooter = self:getMasterLooter()
 		self.vars.rolls = data
 	elseif prefix == ADDON_MSGS.startRoll and self:isUserMasterLooter(sender) then
@@ -83,15 +84,14 @@ function RB:checkMasterLooterChanged()
 	if self.vars.masterLooter == self:getMasterLooter() then
 		return
 	end
-	log("Master looter changed, request loot options")
+	log("CheckMasterLooterChanged: Master looter changed, request loot options")
 	self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
 end
 
 function RB:eventGroupRosterUpdate()
-	log("GroupRosterUpdate")
 	if self:isMyselfMasterLooter() then
 		self.vars.rolls = self.db.profile.rolls
-		log("Rolls are now", self.vars.rolls)
+		log("GroupRosterUpdate: Rolls are now", self.vars.rolls)
 		self:sendMasterLooterSettings()
 	else
 		self:scheduleTimer(self.checkMasterLooterChanged, 2)
