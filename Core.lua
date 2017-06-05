@@ -27,6 +27,7 @@ function RB:OnInitialize()
 	self.l = LibStub("AceLocale-3.0"):GetLocale("RollBot", false)
 	self.timers = LibStub("AceTimer-3.0")
 	self.serializer = LibStub("AceSerializer-3.0")
+	self.gui = LibStub("AceGUI-3.0")
 
 	self.db = LibStub("AceDB-3.0"):New(ADDON_NAME .. "DB", self:GenerateDefaultOptions(), true)
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBotSettings", "RBS"})
