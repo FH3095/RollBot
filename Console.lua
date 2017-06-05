@@ -12,6 +12,8 @@ function RB:consoleParseCommand(msg, editbox)
 		self:consoleStartRoll(itemLink)
 	elseif cmd == "resultwindow" then
 		self:openResultWindow()
+	elseif cmd == "rollwindow" then
+		self:openRollWindow(nil)
 	elseif cmd == "versions" then
 		self:scheduleTimer(self.consolePrintVersions, 7)
 		self.com:SendCommMessage(self.consts.ADDON_MSGS.getVersionReq, "", "RAID")
@@ -28,6 +30,8 @@ function RB:consolePrintHelp()
 	self.console:Printf("    Posts a raidwarning or raidmessage and let the raiders with the client choose their roll")
 	self.console:Printf("resultwindow")
 	self.console:Printf("    Opens roll result window")
+	self.console:Printf("rollwindow")
+	self.console:Printf("    Opens roll window (again)")
 end
 
 function RB:consoleStartRoll(itemLink)
