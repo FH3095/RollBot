@@ -58,44 +58,21 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 	if prefix == ADDON_MSGS.lootOptionsReq and self:isMyselfMasterLooter() then
 		self:sendMasterLooterSettings()
 	elseif prefix == ADDON_MSGS.lootOptionsResp and self:isUserMasterLooter(sender) then
-	-- TODO implement
+		local success, data = self.serializer:Deserialize(message)
+		if not success then
+			self:consolePrintError("Cant deserialize roll data: %s", data)
+			return
+		end
+		self.vars.rolls = data
 	elseif prefix == ADDON_MSGS.startRoll and self:isUserMasterLooter(sender) then
 	-- TODO implement
 	elseif prefix == ADDON_MSGS.getVersionReq then
 		self.com:SendCommMessage(ADDON_MSGS.getVersionResp, VERSION, "RAID")
 	elseif prefix == ADDON_MSGS.getVersionResp then
 		self.vars.versions[sender] = message
+	else
+		self:consolePrintError("Invalid addon message: %s", prefix)
 	end
-end
-
-function RB:isUserMasterLooter(user)
-	-- TODO: Implement
-	return false
-end
-
-function RB:isMasterLooterActive()
-	local lootMethod = GetLootMethod()
-	if IsInRaid() and lootMethod == "master" then
-		return true
-	end
-	return false
-end
-
-function RB:isMyselfMasterLooter()
-	local lootMethod, masterLooterPartyId = GetLootMethod()
-	if IsInRaid() and lootMethod == "master" and masterLooterPartyId == 0 then
-		return true
-	end
-	return false
-end
-
-function RB:getMasterLooter()
-	if not self:isMasterLooterActive() then
-		return nil
-	end
-	local _, _, masterLooterRaidId = GetLootMethod()
-	local ret = GetRaidRosterInfo(masterLooterRaidId)
-	return ret
 end
 
 function RB:checkMasterLooterChanged()
@@ -104,12 +81,6 @@ function RB:checkMasterLooterChanged()
 		return
 	end
 	self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
-end
-
-function RB:sendMasterLooterSettings()
-	log("SendMasterLooterSettings")
-	local data = self.serializer:Serialize(self.vars.rolls)
-	self.com:SendCommMessage(ADDON_MSGS.lootOptionsResp, data, "RAID")
 end
 
 function RB:eventGroupRosterUpdate()
@@ -121,11 +92,4 @@ function RB:eventGroupRosterUpdate()
 	else
 		self:scheduleTimer(self.checkMasterLooterChanged, 2)
 	end
-end
-
-function RB:scheduleTimer(func, delay)
-	local timerFunc = function()
-		func(RB)
-	end
-	self.timers:ScheduleTimer(timerFunc, delay)
 end

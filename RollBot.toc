@@ -13,5 +13,6 @@ locales/deDE.lua
 
 Debug.lua
 Core.lua
+Helpers.lua
 Settings.lua
 Console.lua

@@ -32,13 +32,10 @@ function RB:consoleStartRoll(itemLink)
 		self:consolePrintError("Invalid item link: %s", itemLink)
 		return
 	end
-
-	local ownRaidId = UnitInRaid("player")
-	if ownRaidId == nil then
+	local success, ownRank = self:getOwnRaidInfo()
+	if success == nil then
 		self:consolePrintError("Cant start roll while not in a raid")
-		return
 	end
-	local _, ownRank = GetRaidRosterInfo(ownRaidId)
 	local chatMsgType = "RAID"
 	if ownRank > 0 then
 		chatMsgType = "RAID_WARNING"
