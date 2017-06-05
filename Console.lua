@@ -35,6 +35,7 @@ function RB:consoleStartRoll(itemLink)
 	local success, ownRank = self:getOwnRaidInfo()
 	if success == nil then
 		self:consolePrintError("Not in raid")
+		return
 	end
 	local chatMsgType = "RAID"
 	if ownRank > 0 then
