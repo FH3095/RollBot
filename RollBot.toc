@@ -16,3 +16,5 @@ Core.lua
 Helpers.lua
 Settings.lua
 Console.lua
+RollWindow.lua
+ResultWindow.lua
