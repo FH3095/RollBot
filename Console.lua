@@ -41,6 +41,10 @@ function RB:consoleStartRoll(itemLink)
 		self:consolePrintError("Not in raid")
 		return
 	end
+	if not self:isMyselfMasterLooter() then
+		self:consolePrintError("You are not the master looter")
+		return
+	end
 	local chatMsgType = "RAID"
 	if ownRank > 0 then
 		chatMsgType = "RAID_WARNING"
