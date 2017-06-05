@@ -2,10 +2,8 @@ package-as: RollBot
 externals:
   libs/Ace3:
     url: https://repos.wowace.com/wow/ace3/trunk
-  libs/LibStub:
-    url: https://repos.wowace.com/wow/libstub/trunk
-  libs/LibDataBroker-1-1:
-    url: https://repos.wowace.com/wow/libdatabroker-1-1/trunk
+#  libs/LibStub:
+#    url: https://repos.wowace.com/wow/libstub/trunk
 enable-nolib-creation: no
 ignore:
   - libs

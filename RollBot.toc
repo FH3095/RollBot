@@ -11,4 +11,7 @@ embed.xml
 locales/enUS.lua
 locales/deDE.lua
 
+Debug.lua
 Core.lua
+Settings.lua
+Console.lua

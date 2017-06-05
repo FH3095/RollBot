@@ -1,7 +1,6 @@
 
 local ADDON_NAME = "RollBot"
 local VERSION = "1.0.0"
-local IS_DEBUG = true
 local ADDON_MSGS = {
 	lootOptionsReq = ADDON_NAME .. "1",
 	lootOptionsResp = ADDON_NAME .. "2",
@@ -9,46 +8,27 @@ local ADDON_MSGS = {
 	getVersionReq = ADDON_NAME .. "4",
 	getVersionResp = ADDON_NAME .. "5",
 }
+local log = RollBotDebug.log
 local RB = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME)
 RollBot = RB
 
-local function objToString(obj)
-	if type(obj) == "table" then
-		local s = "{ "
-		for k,v in pairs(obj) do
-			if type(k) == "table" then
-				k = '"TableAsKey"'
-			elseif type(k) ~= "number" then
-				k = '"'..k..'"'
-			end
-			s = s .. "["..k.."] = " .. objToString(v) .. ','
-		end
-		return s .. "} "
-	else
-		return tostring(obj)
-	end
-end
-
-local function log(str, ...)
-	if not IS_DEBUG then
-		return
-	end
-	str = str .. ": "
-	for i=1,select('#', ...) do
-		local val = select(i ,...)
-		str = str .. objToString(val) .. " ; "
-	end
-	print(str)
-end
+RB.consts = {}
+RB.consts.ADDON_MSGS = ADDON_MSGS
+RB.consts.ADDON_NAME = ADDON_NAME
+RB.consts.VERSION = VERSION
 
 function RB:OnInitialize()
 	self.vars = {
 		masterLooter = nil,
+		rolls = {},
+		versions = {},
 	}
 	self.l = LibStub("AceLocale-3.0"):GetLocale("RollBot", false)
-	self.timer = LibStub("AceTimer-3.0")
+	self.timers = LibStub("AceTimer-3.0")
+	self.serializer = LibStub("AceSerializer-3.0")
+
 	self.db = LibStub("AceDB-3.0"):New(ADDON_NAME .. "DB", self:GenerateDefaultOptions(), true)
-	LibStub("AceConfig-3.0"):RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBot", "RB"})
+	LibStub("AceConfig-3.0"):RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBotSettings", "RBS"})
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(ADDON_NAME)
 
 	self.com = LibStub("AceComm-3.0")
@@ -60,11 +40,28 @@ function RB:OnInitialize()
 	end
 
 	self.events = LibStub("AceEvent-3.0")
-	self.events:RegisterEvent("GROUP_ROSTER_UPDATE", function() RB:GROUP_ROSTER_UPDATE() end)
+	self.events:RegisterEvent("GROUP_ROSTER_UPDATE", function() RB:eventGroupRosterUpdate() end)
+
+	self.console = LibStub("AceConsole-3.0")
+	local consoleCommandFunc = function(msg, editbox)
+		RB:consoleParseCommand(msg, editbox)
+	end
+	self.console:RegisterChatCommand("RB", consoleCommandFunc, true)
+	self.console:RegisterChatCommand("RollBot", consoleCommandFunc, true)
 end
 
 function RB:comAddonMsg(prefix, message, distribution, sender)
+	if distribution ~= "RAID" then
+		return
+	end
 	log("ComAddonMsg", message, distribution, sender)
+	if prefix == ADDON_MSGS.lootOptionsReq and self:isMyselfMasterLooter() then
+		self:sendMasterLooterSettings()
+	elseif prefix == ADDON_MSGS.getVersionReq then
+		self.com:SendCommMessage(ADDON_MSGS.getVersionResp, VERSION, "RAID")
+	elseif prefix == ADDON_MSGS.getVersionResp then
+		self.vars.versions[sender] = message
+	end
 end
 
 function RB:isMasterLooterActive()
@@ -95,125 +92,33 @@ function RB:getMasterLooter()
 	return ret
 end
 
-function RB:GROUP_ROSTER_UPDATE()
+function RB:checkMasterLooterChanged()
+	log("CheckMasterLooterChanged")
+	if self.vars.masterLooter == self:getMasterLooter() then
+		return
+	end
+end
+
+function RB:sendMasterLooterSettings()
+	log("SendMasterLooterSettings")
+	local data = self.serializer:Serialize(self.vars.rolls)
+	self.com:SendCommMessage(ADDON_MSGS.lootOptionsResp, data, "RAID")
+end
+
+function RB:eventGroupRosterUpdate()
 	log("GroupRosterUpdate")
-end
-
-function RB:GenerateDefaultOptions()
-	local ret = {
-		profile = {
-			numRollOptions = 3,
-			rolls ={
-				roll1 = {
-					roll = 100,
-					name = "Need",
-				},
-				roll2 = {
-					roll = 95,
-					name = "Greed",
-				},
-				roll3 = {
-					roll = 90,
-					name = "Disenchant",
-				},
-			}
-		}
-	}
-	return ret
-end
-
-function RB:GenerateOptions()
-	local rolls = {
-		type	= "group",
-		name	= "Rolls",
-		set		= "SetRollOption",
-		get		= "GetRollOption",
-		childGroups = "select",
-		args	= {},
-	};
-	for i=1,self.db.profile.numRollOptions do
-		local rollName = "Roll %3d"
-		rollName = rollName:format(i)
-		local roll = {
-			type = "group",
-			name = rollName,
-			args = {
-				name = {
-					type	= "input",
-					name	= "Name",
-					multiline = false,
-				},
-				roll = {
-					type	= "range",
-					name	= "Roll",
-					min		= 1,
-					max		= 1000000,
-					softMax	= 100,
-					step	= 1,
-				}
-			}
-		}
-		rolls.args["roll" .. i] = roll
-	end
-
-	local ret = {
-		name = ADDON_NAME,
-		type = "group",
-		args = {
-			basic = {
-				name = "Basic",
-				type = "group",
-				set = "SetBasicOption",
-				get = "GetBasicOption",
-				args = {
-					numRollOptions = {
-						type	= "range",
-						name	= "Roll Options",
-						desc	= "Number of roll options",
-						min		= 1,
-						max		= 100,
-						softMax	= 10,
-						step	= 1,
-					},
-				}
-			},
-			rolls = rolls,
-		},
-	}
-	--log("Options table", ret)
-	ret.handler = self
-	ret.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
-	return ret
-end
-
-function RB:SetBasicOption(info, value)
-	log("Set option", info[#info], value)
-	self.db.profile[info[#info]] = value
-	if info[#info] == "numRollOptions" then
-		local config = LibStub("AceConfig-3.0")
-		config:RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBot", "RB"})
+	if self:isMyselfMasterLooter() then
+		self.vars.rolls = self.db.profile.rolls
+		log("Rolls are now", self.vars.rolls)
+		self:sendMasterLooterSettings()
+	else
+		self:scheduleTimer(self.checkMasterLooterChanged, 2)
 	end
 end
 
-function RB:GetBasicOption(info)
-	return self.db.profile[info[#info]]
-end
-
-function RB:SetRollOption(info, value)
-	local rollName = info[#info-1]
-	local rollOption = info[#info]
-	log("Set roll option", rollName, rollOption, value)
-	if self.db.profile.rolls[rollName] == nil then
-		self.db.profile.rolls[rollName] = {}
+function RB:scheduleTimer(func, delay)
+	local timerFunc = function()
+		func(RB)
 	end
-	self.db.profile.rolls[rollName][rollOption] = value
-end
-
-function RB:GetRollOption(info)
-	local rollName = info[#info-1]
-	local rollOption = info[#info]
-	if self.db.profile.rolls[rollName] == nil then
-		return nil
-	end
-	return self.db.profile.rolls[rollName][rollOption]
+	self.timers:ScheduleTimer(timerFunc, delay)
 end
