@@ -10,7 +10,7 @@ function RB:openResultWindow()
 	local f = AceGUI:Create("Frame")
 	f:SetCallback("OnClose",function(widget) AceGUI:Release(widget) end)
 	f:SetTitle("AceGUI-3.0 Example")
-	f:SetStatusText("Status Bar")
+	f:SetStatusText("")
 	f:SetLayout("Flow")
 	-- Create a button
 	local btn = AceGUI:Create("Button")
