@@ -69,6 +69,6 @@ function RB:consolePrintVersions()
 end
 
 function RB:consolePrintError(str, ...)
-	str = self.consts.ADDON_NAME_COLORED .. "|cFFFF0000Error:|r " .. str
+	str = self.consts.ADDON_NAME_COLORED .. " |cFFFF0000Error:|r " .. str
 	print(str:format(...))
 end
