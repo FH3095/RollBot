@@ -61,3 +61,7 @@ function RB:sendMasterLooterSettings()
 	local data = self.serializer:Serialize(self.vars.rolls)
 	self.com:SendCommMessage(ADDON_MSGS.lootOptionsResp, data, "RAID")
 end
+
+function RB:doRoll(max)
+	RandomRoll(1, max)
+end
