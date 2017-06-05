@@ -58,14 +58,21 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 		return
 	end
 	log("ComAddonMsg", message, distribution, sender)
-	if prefix == ADDON_MSGS.lootOptionsReq and self:isMyselfMasterLooter() then
+	if prefix == ADDON_MSGS.lootOptionsReq then
+		if not self:isMyselfMasterLooter() then
+			return
+		end
 		self:sendMasterLooterSettings()
-	elseif prefix == ADDON_MSGS.lootOptionsResp and self:isUserMasterLooter(sender) then
+	elseif prefix == ADDON_MSGS.lootOptionsResp then
 		local success, data = self.serializer:Deserialize(message)
 		if not success then
 			self:consolePrintError("Cant deserialize roll data: %s", data)
 			return
 		end
+		if not self:isUserMasterLooter(sender) then
+			log("Received LootOptions but user is not masterlooter", sender, data)
+		end
+
 		log("ComAddonMsg: New MasterLooter options", data, self.vars.masterLooter, self:getMasterLooter())
 		self.vars.masterLooter = self:getMasterLooter()
 		self.vars.rolls = data
