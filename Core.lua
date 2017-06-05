@@ -66,7 +66,7 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 		end
 		self.vars.rolls = data
 	elseif prefix == ADDON_MSGS.startRoll and self:isUserMasterLooter(sender) then
-	-- TODO implement
+		self:openRollWindow(message)
 	elseif prefix == ADDON_MSGS.getVersionReq then
 		self.com:SendCommMessage(ADDON_MSGS.getVersionResp, VERSION, "RAID")
 	elseif prefix == ADDON_MSGS.getVersionResp then
