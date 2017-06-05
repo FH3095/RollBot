@@ -57,7 +57,7 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 	if distribution ~= "RAID" then
 		return
 	end
-	log("ComAddonMsg", message, distribution, sender)
+	log("ComAddonMsg", prefix, sender)
 	if prefix == ADDON_MSGS.lootOptionsReq then
 		if not self:isMyselfMasterLooter() then
 			return
