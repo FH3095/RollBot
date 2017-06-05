@@ -71,12 +71,17 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 		end
 		if not self:isUserMasterLooter(sender) then
 			log("Received LootOptions but user is not masterlooter", sender, data)
+			return
 		end
 
 		log("ComAddonMsg: New MasterLooter options", data, self.vars.masterLooter, self:getMasterLooter())
 		self.vars.masterLooter = self:getMasterLooter()
 		self.vars.rolls = data
-	elseif prefix == ADDON_MSGS.startRoll and self:isUserMasterLooter(sender) then
+	elseif prefix == ADDON_MSGS.startRoll then
+		if not self:isUserMasterLooter(sender) then
+			log("Received StartRoll but user is not masterlooter", sender, message)
+			return
+		end
 		self:openRollWindow(message)
 	elseif prefix == ADDON_MSGS.getVersionReq then
 		self.com:SendCommMessage(ADDON_MSGS.getVersionResp, VERSION, "RAID")
