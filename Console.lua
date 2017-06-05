@@ -46,7 +46,7 @@ function RB:consoleStartRoll(itemLink)
 		chatMsgType = "RAID_WARNING"
 	end
 	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, itemLink, "RAID")
-	SendChatMessage(self.db.profile.rollText:format(itemLink), chatType)
+	SendChatMessage(self.db.profile.rollText:format(itemLink), chatMsgType)
 	self:openResultWindow()
 end
 
