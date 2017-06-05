@@ -27,7 +27,6 @@ function RB:getMasterLooter()
 	return ret
 end
 
-
 function RB:scheduleTimer(func, delay)
 	local timerFunc = function()
 		func(RB)

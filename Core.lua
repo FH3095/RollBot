@@ -66,6 +66,7 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 			self:consolePrintError("Cant deserialize roll data: %s", data)
 			return
 		end
+		self.vars.masterLooter = self:getMasterLooter()
 		self.vars.rolls = data
 	elseif prefix == ADDON_MSGS.startRoll and self:isUserMasterLooter(sender) then
 		self:openRollWindow(message)
@@ -79,10 +80,10 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 end
 
 function RB:checkMasterLooterChanged()
-	log("CheckMasterLooterChanged")
 	if self.vars.masterLooter == self:getMasterLooter() then
 		return
 	end
+	log("Master looter changed, request loot options")
 	self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
 end
 
