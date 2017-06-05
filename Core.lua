@@ -98,7 +98,7 @@ end
 function RB:eventGroupRosterUpdate()
 	if self:isMyselfMasterLooter() then
 		self.vars.rolls = self.db.profile.rolls
-		log("GroupRosterUpdate: Rolls are now", self.vars.rolls)
+		log("GroupRosterUpdate: Im now the master looter")
 		self:sendMasterLooterSettings()
 	else
 		self:scheduleTimer(self.checkMasterLooterChanged, 2)
