@@ -10,6 +10,8 @@ function RB:consoleParseCommand(msg, editbox)
 	elseif cmd == "startroll" then
 		local itemLink = self.console:GetArgs(msg, 1, nextpos)
 		self:consoleStartRoll(itemLink)
+	elseif cmd == "resultwindow" then
+		self:openResultWindow()
 	elseif cmd == "versions" then
 		self:scheduleTimer(self.consolePrintVersions, 7)
 		self.com:SendCommMessage(self.consts.ADDON_MSGS.getVersionReq, "", "RAID")
@@ -24,6 +26,8 @@ function RB:consolePrintHelp()
 	self.console:Printf("    Requests version from everyone in the raid, waits 7 seconds for response and then prints the versions")
 	self.console:Printf("startroll ItemLink")
 	self.console:Printf("    Posts a raidwarning or raidmessage and let the raiders with the client choose their roll")
+	self.console:Printf("resultwindow")
+	self.console:Printf("    Opens roll result window")
 end
 
 function RB:consoleStartRoll(itemLink)
@@ -43,6 +47,7 @@ function RB:consoleStartRoll(itemLink)
 	end
 	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, itemLink, "RAID")
 	SendChatMessage(self.db.profile.rollText:format(itemLink), chatType)
+	self:openResultWindow()
 end
 
 function RB:consolePrintVersions()
