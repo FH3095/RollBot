@@ -2,11 +2,6 @@
 local RB = RollBot
 local log = RollBotDebug.log
 
-function RB:isUserMasterLooter(user)
-	-- TODO: Implement
-	return false
-end
-
 function RB:isMasterLooterActive()
 	local lootMethod = GetLootMethod()
 	if IsInRaid() and lootMethod == "master" then
@@ -46,6 +41,19 @@ function RB:getOwnRaidInfo()
 		return nil
 	end
 	return GetRaidRosterInfo(ownRaidId)
+end
+
+-- TODO: Test method
+function RB:isUserMasterLooter(user)
+	local userRaidId = UnitInRaid(user)
+	if userRaidId == nil then
+		return false
+	end
+	local _,_,_,_,_,_,_,_,_,_, isMasterLooter = GetRaidRosterInfo(userRaidId)
+	if isMasterLooter == true then
+		return true
+	end
+	return false
 end
 
 function RB:sendMasterLooterSettings()
