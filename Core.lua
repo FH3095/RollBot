@@ -42,6 +42,7 @@ function RB:OnInitialize()
 
 	self.events = LibStub("AceEvent-3.0")
 	self.events:RegisterEvent("GROUP_ROSTER_UPDATE", function() RB:eventGroupRosterUpdate() end)
+	self.events:RegisterEvent("CHAT_MSG_SYSTEM", function(_, msg) RB:eventChatMsgSystem(msg) end)
 
 	self.console = LibStub("AceConsole-3.0")
 	local consoleCommandFunc = function(msg, editbox)
@@ -93,4 +94,13 @@ function RB:eventGroupRosterUpdate()
 	else
 		self:scheduleTimer(self.checkMasterLooterChanged, 2)
 	end
+end
+
+function RB:eventChatMsgSystem(msg)
+	local rollUser, roll, rollMin, rollMax = msg:match(self.l['ROLL_REGEX'])
+	if (nil == rollUser) then
+		return
+	end
+	log("EventChatMsgSystem, roll found", msg)
+	RB:resultAddRoll(rollUser, roll, rollMin, rollMax)
 end
