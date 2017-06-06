@@ -5,6 +5,7 @@ local log = RollBotDebug.log
 function RB:consoleParseCommand(msg, editbox)
 	log("ParseChatCommand", msg)
 	local cmd, nextpos = self.console:GetArgs(msg)
+	cmd = cmd:lower()
 	if cmd == "help" or cmd == nil then
 		self:consolePrintHelp()
 	elseif cmd == "startroll" then
