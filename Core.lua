@@ -53,6 +53,22 @@ function RB:OnInitialize()
 	end
 	self.console:RegisterChatCommand("RB", consoleCommandFunc, true)
 	self.console:RegisterChatCommand("RollBot", consoleCommandFunc, true)
+
+	local toggleDropDownMenuHookFunc = function(_, _, frame)
+		if frame ~= GroupLootDropDown then
+			return
+		end
+		local info = UIDropDownMenu_CreateInfo();
+		info.notCheckable = 1;
+		info.text = RB.l['MASTER_LOOTER_FRAME_START_ROLL'];
+		info.func = function()
+			local itemLink = GetLootSlotLink(LootFrame.selectedSlot)
+			log("MasterLooterDropDown_StartRoll", LootFrame.selectedSlot, itemLink)
+			RB:startRoll(itemLink)
+		end
+		UIDropDownMenu_AddButton(info);
+	end
+	hooksecurefunc("ToggleDropDownMenu", toggleDropDownMenuHookFunc)
 end
 
 function RB:comAddonMsg(prefix, message, distribution, sender)
@@ -84,6 +100,7 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 			log("Received StartRoll but user is not masterlooter", sender, message)
 			return
 		end
+		log("ComAddonMsg start roll", sender, message)
 		self:openRollWindow(message)
 	elseif prefix == ADDON_MSGS.getVersionReq then
 		self.com:SendCommMessage(ADDON_MSGS.getVersionResp, VERSION, "RAID")

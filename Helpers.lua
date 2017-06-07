@@ -64,3 +64,23 @@ end
 function RB:doRoll(max)
 	RandomRoll(1, max)
 end
+
+function RB:startRoll(itemLink)
+	local success, ownRank = self:getOwnRaidInfo()
+	if success == nil then
+		self:consolePrintError("Not in raid")
+		return
+	end
+	if not self:isMyselfMasterLooter() then
+		self:consolePrintError("You are not the master looter")
+		return
+	end
+	local chatMsgType = "RAID"
+	if ownRank > 0 then
+		chatMsgType = "RAID_WARNING"
+	end
+	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, itemLink, "RAID")
+	SendChatMessage(self.db.profile.rollText:format(itemLink), chatMsgType)
+	self:openResultWindow()
+	self:resultClearRolls()
+end
