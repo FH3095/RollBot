@@ -8,6 +8,7 @@ function RB:GenerateDefaultOptions()
 		profile = {
 			numRollOptions = 3,
 			rollText = "ROLL %s",
+			openResultWindowOnStartRollByOtherPM = false,
 			rolls ={
 				roll1 = {
 					roll = 100,
@@ -84,6 +85,11 @@ function RB:GenerateOptions()
 						type	= "input",
 						name	= "Roll Text",
 						multiline = false,
+					},
+					openResultWindowOnStartRollByOtherPM = {
+						name = "Also open result window when other pm starts roll",
+						type = "toggle",
+						tristate = false,
 					},
 				}
 			},
