@@ -24,7 +24,7 @@ function RB:consoleParseCommand(msg, editbox)
 		self:scheduleTimer(self.consolePrintVersions, 7)
 		self.com:SendCommMessage(self.consts.ADDON_MSGS.getVersionReq, "", "RAID")
 	else
-		self.console:Printf("Invalid command \"%s\". Use \"help\" for available commands.", cmd)
+		self:consolePrintError("Invalid command \"%s\". Use \"help\" for available commands.", cmd)
 	end
 end
 
