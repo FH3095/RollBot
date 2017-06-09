@@ -30,13 +30,13 @@ end
 
 function RB:consolePrintHelp()
 	self.console:Printf("%s: Available commands:", self.consts.ADDON_NAME_COLORED)
-	self.console:Printf(RB.consts.COLORS.HIGHTLIGH .. "Versions|r")
+	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Versions|r")
 	self.console:Printf("    Requests version from everyone in the raid, waits 7 seconds for response and then prints the versions")
-	self.console:Printf(RB.consts.COLORS.HIGHTLIGH .. "StartRoll ItemLink|r")
+	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "StartRoll ItemLink|r")
 	self.console:Printf("    Posts a raidwarning or raidmessage and let the raiders with the addon choose their roll")
-	self.console:Printf(RB.consts.COLORS.HIGHTLIGH .. "Results|r")
+	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Results|r")
 	self.console:Printf("    Opens roll window that contains the rolls from the chat")
-	self.console:Printf(RB.consts.COLORS.HIGHTLIGH .. "Rolls|r")
+	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Rolls|r")
 	self.console:Printf("    Opens the window that contains the buttons to do rolls")
 end
 
