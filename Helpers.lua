@@ -66,6 +66,15 @@ function RB:doRoll(max)
 end
 
 function RB:startRoll(itemLink)
+	if itemLink == nil then
+		self:consolePrintError("To start a roll we need an item")
+		return
+	end
+	local itemName = GetItemInfo(itemLink)
+	if nil == itemName then
+		self:consolePrintError("Invalid item link: %s", itemLink)
+		return
+	end
 	local success, ownRank = self:getOwnRaidInfo()
 	if success == nil then
 		self:consolePrintError("Not in raid")
@@ -75,6 +84,7 @@ function RB:startRoll(itemLink)
 		self:consolePrintError("You are not the master looter")
 		return
 	end
+
 	local chatMsgType = "RAID"
 	if ownRank > 0 then
 		chatMsgType = "RAID_WARNING"

@@ -15,7 +15,7 @@ function RB:consoleParseCommand(msg, editbox)
 		self:consolePrintHelp()
 	elseif cmd == "startroll" then
 		local itemLink = self.console:GetArgs(msg, 1, nextpos)
-		self:consoleStartRoll(itemLink)
+		self:startRoll(itemLink)
 	elseif cmd == "results" then
 		self:openResultWindow()
 	elseif cmd == "rolls" then
@@ -38,15 +38,6 @@ function RB:consolePrintHelp()
 	self.console:Printf("    Opens roll window that contains the rolls from the chat")
 	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Rolls|r")
 	self.console:Printf("    Opens the window that contains the buttons to do rolls")
-end
-
-function RB:consoleStartRoll(itemLink)
-	local itemName = GetItemInfo(itemLink)
-	if nil == itemName then
-		self:consolePrintError("Invalid item link: %s", itemLink)
-		return
-	end
-	self:startRoll(itemLink)
 end
 
 function RB:consolePrintVersions()
