@@ -16,7 +16,10 @@ RB.consts = {}
 RB.consts.ADDON_MSGS = ADDON_MSGS
 RB.consts.ADDON_NAME = ADDON_NAME
 RB.consts.VERSION = VERSION
-RB.consts.ADDON_NAME_COLORED = "|cFF00FFFF" .. RB.consts.ADDON_NAME .. "|r"
+RB.consts.COLORS = {
+	HIGHLIGHT = "|cFF00FFFF",
+}
+RB.consts.ADDON_NAME_COLORED = RB.consts.COLORS.HIGHLIGHT .. RB.consts.ADDON_NAME .. "|r"
 
 function RB:OnInitialize()
 	self.vars = {

@@ -5,15 +5,20 @@ local log = RollBotDebug.log
 function RB:consoleParseCommand(msg, editbox)
 	log("ParseChatCommand", msg)
 	local cmd, nextpos = self.console:GetArgs(msg)
+	if cmd == nil or cmd == "" then
+		self:consolePrintHelp()
+		return
+	end
+
 	cmd = cmd:lower()
-	if cmd == "help" or cmd == nil then
+	if cmd == "help" then
 		self:consolePrintHelp()
 	elseif cmd == "startroll" then
 		local itemLink = self.console:GetArgs(msg, 1, nextpos)
 		self:consoleStartRoll(itemLink)
-	elseif cmd == "resultwindow" then
+	elseif cmd == "results" then
 		self:openResultWindow()
-	elseif cmd == "rollwindow" then
+	elseif cmd == "rolls" then
 		self:openRollWindow(nil)
 	elseif cmd == "versions" then
 		self:scheduleTimer(self.consolePrintVersions, 7)
@@ -25,14 +30,14 @@ end
 
 function RB:consolePrintHelp()
 	self.console:Printf("%s: Available commands:", self.consts.ADDON_NAME_COLORED)
-	self.console:Printf("versions")
+	self.console:Printf(RB.consts.colors.HIGHTLIGH .. "Versions|r")
 	self.console:Printf("    Requests version from everyone in the raid, waits 7 seconds for response and then prints the versions")
-	self.console:Printf("startroll ItemLink")
-	self.console:Printf("    Posts a raidwarning or raidmessage and let the raiders with the client choose their roll")
-	self.console:Printf("resultwindow")
-	self.console:Printf("    Opens roll result window")
-	self.console:Printf("rollwindow")
-	self.console:Printf("    Opens roll window (again)")
+	self.console:Printf(RB.consts.colors.HIGHTLIGH .. "StartRoll ItemLink|r")
+	self.console:Printf("    Posts a raidwarning or raidmessage and let the raiders with the addon choose their roll")
+	self.console:Printf(RB.consts.colors.HIGHTLIGH .. "Results|r")
+	self.console:Printf("    Opens roll window that contains the rolls from the chat")
+	self.console:Printf(RB.consts.colors.HIGHTLIGH .. "Rolls|r")
+	self.console:Printf("    Opens the window that contains the buttons to do rolls")
 end
 
 function RB:consoleStartRoll(itemLink)
