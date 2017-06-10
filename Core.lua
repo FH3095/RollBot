@@ -48,7 +48,7 @@ function RB:OnInitialize()
 	self.events:RegisterEvent("CHAT_MSG_SYSTEM", function(_, msg) RB:eventChatMsgSystem(msg) end)
 
 	self.buckets = LibStub("AceBucket-3.0")
-	self.buckets:RegisterBucketEvent("GROUP_ROSTER_UPDATE", 0.3, function() RB:eventGroupRosterUpdate() end)
+	self.buckets:RegisterBucketEvent("GROUP_ROSTER_UPDATE", 0.5, function() RB:eventGroupRosterUpdate() end)
 
 	self.console = LibStub("AceConsole-3.0")
 	local consoleCommandFunc = function(msg, editbox)
