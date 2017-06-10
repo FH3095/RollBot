@@ -9,7 +9,6 @@ function RB:openResultWindow()
 	local f = self.gui:Create("Window")
 	f:SetCallback("OnClose",function(widget) RB.gui:Release(widget) end)
 	f:SetTitle("AceGUI-3.0 Example")
-	f:SetStatusText("")
 	f:SetLayout("Flow")
 	-- Create a button
 	local btn = self.gui:Create("Button")
@@ -25,6 +24,12 @@ function RB:openResultWindow()
 	btn:SetCallback("OnLeave", function() GameTooltip:Hide() end)
 	-- Add the button to the container
 	f:AddChild(btn)
+	for i=1,5 do
+		btn = self.gui:Create("Button")
+		btn:SetWidth(150)
+		btn:SetText("Button " .. i)
+		f:AddChild(btn)
+	end
 end
 
 function RB:resultAddRoll(name, roll, rollMin, rollMax)
