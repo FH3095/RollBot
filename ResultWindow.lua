@@ -10,6 +10,7 @@ function RB:openResultWindow()
 	f:SetCallback("OnClose",function(widget) RB.gui:Release(widget) end)
 	f:SetTitle("AceGUI-3.0 Example")
 	f:SetLayout("Flow")
+	f:EnableResize(false)
 	-- Create a button
 	local btn = self.gui:Create("Button")
 	btn:SetWidth(170)
