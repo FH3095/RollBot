@@ -1,5 +1,8 @@
 
-local IS_DEBUG = true
+local IS_DEBUG = false
+--@alpha@
+IS_DEBUG = true
+--@end-alpha@
 RollBotDebug = {}
 
 local function objToString(obj)

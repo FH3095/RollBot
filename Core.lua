@@ -1,6 +1,6 @@
 
 local ADDON_NAME = "RollBot"
-local VERSION = "1.0.0"
+local VERSION = "@project-version@"
 local ADDON_MSGS = {
 	lootOptionsReq = ADDON_NAME .. "1",
 	lootOptionsResp = ADDON_NAME .. "2",
