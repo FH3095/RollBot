@@ -6,7 +6,7 @@ local RB = RollBot
 function RB:GenerateDefaultOptions()
 	local ret = {
 		profile = {
-			numRollOptions = 3,
+			numRollOptions = 2,
 			rollText = "ROLL %s",
 			openResultWindowOnStartRollByOtherPM = false,
 			rolls ={
@@ -17,10 +17,6 @@ function RB:GenerateDefaultOptions()
 				[2] = {
 					roll = 95,
 					name = "Greed",
-				},
-				[3] = {
-					roll = 90,
-					name = "Disenchant",
 				},
 			}
 		}
@@ -76,7 +72,7 @@ function RB:GenerateOptions()
 						type	= "range",
 						name	= "Roll Options",
 						desc	= "Number of roll options",
-						min		= 1,
+						min		= 2,
 						max		= 100,
 						softMax	= 10,
 						step	= 1,
@@ -107,7 +103,7 @@ function RB:SetBasicOption(info, value)
 	self.db.profile[info[#info]] = value
 	if info[#info] == "numRollOptions" then
 		local config = LibStub("AceConfig-3.0")
-		config:RegisterOptionsTable(RB.consts.ADDON_NAME, self:GenerateOptions(), {"RollBot", "RB"})
+		config:RegisterOptionsTable(RB.consts.ADDON_NAME, self:GenerateOptions(), {"RollBotSettings", "RBS"})
 	end
 end
 

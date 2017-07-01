@@ -20,6 +20,7 @@ RB.consts.COLORS = {
 	HIGHLIGHT = "|cFF00FFFF",
 }
 RB.consts.ADDON_NAME_COLORED = RB.consts.COLORS.HIGHLIGHT .. RB.consts.ADDON_NAME .. "|r"
+RB.consts.UNKNOWN_ITEM_FALLBACK = "|cffffffff|Hitem:6948::::::::110:257::::::|h[Ruhestein]|h|r"
 
 function RB:OnInitialize()
 	self.vars = {
@@ -32,7 +33,7 @@ function RB:OnInitialize()
 			guiFrame = nil,
 		},
 		rollWindowVars = {
-			lastItem = "|cffffffff|Hitem:6948::::::::110:257::::::|h[Ruhestein]|h|r",
+			lastItem = self.consts.UNKNOWN_ITEM_FALLBACK,
 			guiFrame = nil,
 		},
 	}
