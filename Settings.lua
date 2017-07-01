@@ -10,15 +10,15 @@ function RB:GenerateDefaultOptions()
 			rollText = "ROLL %s",
 			openResultWindowOnStartRollByOtherPM = false,
 			rolls ={
-				roll1 = {
+				[1] = {
 					roll = 100,
 					name = "Need",
 				},
-				roll2 = {
+				[2] = {
 					roll = 95,
 					name = "Greed",
 				},
-				roll3 = {
+				[3] = {
 					roll = 90,
 					name = "Disenchant",
 				},
@@ -59,7 +59,7 @@ function RB:GenerateOptions()
 				}
 			}
 		}
-		rolls.args["roll" .. i] = roll
+		rolls.args[tostring(i)] = roll
 	end
 
 	local ret = {
@@ -116,7 +116,7 @@ function RB:GetBasicOption(info)
 end
 
 function RB:SetRollOption(info, value)
-	local rollName = info[#info-1]
+	local rollName = tonumber(info[#info-1])
 	local rollOption = info[#info]
 	log("Set roll option", rollName, rollOption, value)
 	if self.db.profile.rolls[rollName] == nil then
@@ -126,7 +126,7 @@ function RB:SetRollOption(info, value)
 end
 
 function RB:GetRollOption(info)
-	local rollName = info[#info-1]
+	local rollName = tonumber(info[#info-1])
 	local rollOption = info[#info]
 	if self.db.profile.rolls[rollName] == nil then
 		return nil
