@@ -7,7 +7,10 @@ local function createWindowText(rolls, label)
 	for _,roll in ipairs(rolls) do
 		text = text .. roll["name"] .. " : " .. roll["roll"] .. " (" .. roll["rollMin"] .. "-" .. roll["rollMax"] .. ")\n"
 	end
-	label:SetText(text)
+	-- If label is not initalized, no text update is needed
+	if label ~= nil then
+		label:SetText(text)
+	end
 end
 
 function RB:openResultWindow()
@@ -18,7 +21,7 @@ function RB:openResultWindow()
 	end
 	-- Create a container frame
 	local f = self.gui:Create("Window")
-	f:SetCallback("OnClose",function(widget) RB.vars.resultWindowVars["guiFrame"]:Hide() end)
+	f:SetCallback("OnClose",function(widget) widget:Hide() end)
 	f:SetTitle(self.l["RESULT_WINDOW_NAME"])
 	f:SetLayout("Fill")
 	f:EnableResize(true)
