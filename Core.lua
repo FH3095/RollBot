@@ -129,8 +129,8 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 		log("ComAddonMsg start roll", sender, message)
 		self:openRollWindow(message)
 		if self.db.profile.openResultWindowOnStartRollByOtherPM and not self:isMyselfMasterLooter() then
-			self:openResultWindow()
 			self:resultClearRolls()
+			self:openResultWindow()
 		end
 	elseif prefix == ADDON_MSGS.getVersionReq then
 		self.com:SendCommMessage(ADDON_MSGS.getVersionResp, VERSION, "RAID")

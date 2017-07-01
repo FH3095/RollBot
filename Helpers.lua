@@ -89,8 +89,8 @@ function RB:startRoll(itemLink)
 	if ownRank > 0 then
 		chatMsgType = "RAID_WARNING"
 	end
-	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, itemLink, "RAID")
-	SendChatMessage(self.db.profile.rollText:format(itemLink), chatMsgType)
 	self:openResultWindow()
 	self:resultClearRolls()
+	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, itemLink, "RAID")
+	SendChatMessage(self.db.profile.rollText:format(itemLink), chatMsgType)
 end
