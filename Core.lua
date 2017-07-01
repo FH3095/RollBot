@@ -128,8 +128,9 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 		end
 		log("ComAddonMsg start roll", sender, message)
 		self:openRollWindow(message)
+		-- Clear results (also if player opened window via cmd)
+		self:resultClearRolls()
 		if self.db.profile.openResultWindowOnStartRollByOtherPM and not self:isMyselfMasterLooter() then
-			self:resultClearRolls()
 			self:openResultWindow()
 		end
 	elseif prefix == ADDON_MSGS.getVersionReq then
