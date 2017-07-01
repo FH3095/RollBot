@@ -32,6 +32,11 @@ end
 
 function RB:consolePrintHelp()
 	self.console:Printf("%s: Available commands:", self.consts.ADDON_NAME_COLORED)
+	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "/RB|r or " .. RB.consts.COLORS.HIGHLIGHT .. "/RollBot|r")
+	self.console:Printf("    Main Command")
+	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "/RBS|r or " .. RB.consts.COLORS.HIGHLIGHT  .. "/RollBotSettings|r")
+	self.console:Printf("    Command for settings editing")
+	self.console:Printf("Possible " .. RB.consts.COLORS.HIGHLIGHT .. "/RollBot|r parameters:")
 	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Versions|r")
 	self.console:Printf("    Requests version from everyone in the raid, waits 7 seconds for response and then prints the versions")
 	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "StartRoll ItemLink|r")
