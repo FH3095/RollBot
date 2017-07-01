@@ -6,3 +6,5 @@ end
 -- %s rolls %d (%d-%d)
 L['ROLL_REGEX'] = '^([^%s]+.*) rolls (%d+) %((%d+)%-(%d+)%)$'
 L['MASTER_LOOTER_FRAME_START_ROLL'] = 'RollBot start roll'
+L['RESULT_WINDOW_NAME'] = 'Results'
+L['ROLL_WINDOW_NAME'] = 'Rolls'

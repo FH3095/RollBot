@@ -18,6 +18,8 @@ function RB:consoleParseCommand(msg, editbox)
 		self:startRoll(itemLink)
 	elseif cmd == "results" then
 		self:openResultWindow()
+	elseif cmd == "resultsclear" then
+		self:resultClearRolls()
 	elseif cmd == "rolls" then
 		self:openRollWindow(nil)
 	elseif cmd == "versions" then
@@ -36,6 +38,8 @@ function RB:consolePrintHelp()
 	self.console:Printf("    Posts a raidwarning or raidmessage and let the raiders with the addon choose their roll")
 	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Results|r")
 	self.console:Printf("    Opens roll window that contains the rolls from the chat")
+	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "ResultsClear|r")
+	self.console:Printf("    Clears the results")
 	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Rolls|r")
 	self.console:Printf("    Opens the window that contains the buttons to do rolls")
 end

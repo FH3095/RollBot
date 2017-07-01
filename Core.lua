@@ -26,6 +26,12 @@ function RB:OnInitialize()
 		masterLooter = nil,
 		rolls = {},
 		versions = {},
+		resultWindowVars = {
+			rolls = {},
+			guiLabel = nil,
+			guiFrame = nil,
+		},
+		rollWindowVars = {},
 	}
 	self.l = LibStub("AceLocale-3.0"):GetLocale("RollBot", false)
 	self.timers = LibStub("AceTimer-3.0")
@@ -142,5 +148,5 @@ function RB:eventChatMsgSystem(msg)
 		return
 	end
 	log("EventChatMsgSystem, roll found", msg)
-	RB:resultAddRoll(rollUser, roll, rollMin, rollMax)
+	RB:resultAddRoll(rollUser, tonumber(roll), tonumber(rollMin), tonumber(rollMax))
 end
