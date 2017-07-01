@@ -36,9 +36,8 @@ local function createRollWindowChilds(frame, itemLink)
 end
 
 function RB:openRollWindow(itemLink)
-	-- TODO implement
 	log("OpenRollWindow", itemLink)
-	if itemLink == nil or nil == GetItemInfo(itemLink) then
+	if itemLink == nil then
 		itemLink = self.vars.rollWindowVars["lastItem"]
 	end
 	self.vars.rollWindowVars["lastItem"] = itemLink
