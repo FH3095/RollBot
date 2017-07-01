@@ -31,7 +31,10 @@ function RB:OnInitialize()
 			guiLabel = nil,
 			guiFrame = nil,
 		},
-		rollWindowVars = {},
+		rollWindowVars = {
+			lastItem = "|cffffffff|Hitem:6948::::::::110:257::::::|h[Ruhestein]|h|r",
+			guiFrame = nil,
+		},
 	}
 	self.l = LibStub("AceLocale-3.0"):GetLocale("RollBot", false)
 	self.timers = LibStub("AceTimer-3.0")
@@ -78,6 +81,19 @@ function RB:OnInitialize()
 		UIDropDownMenu_AddButton(info);
 	end
 	hooksecurefunc("ToggleDropDownMenu", toggleDropDownMenuHookFunc)
+end
+
+function RB:OnEnable()
+	if self:isMasterLooterActive() then
+		if self:isMyselfMasterLooter() then
+			log("OnEnable: Currently in Raid -> Init and send loot options")
+			self.vars.rolls = self.db.profile.rolls
+			self:sendMasterLooterSettings()
+		else
+			log("OnEnable: Currently in Raid -> Request loot options")
+			self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
+		end
+	end
 end
 
 function RB:comAddonMsg(prefix, message, distribution, sender)
