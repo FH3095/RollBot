@@ -18,6 +18,8 @@ RB.consts.ADDON_NAME = ADDON_NAME
 RB.consts.VERSION = VERSION
 RB.consts.WINDOW_HEIGHT = "WndHeight"
 RB.consts.WINDOW_WIDTH = "WndWidth"
+RB.consts.REPOST_SETTINGS_AFTER_GROUP_CHANGE_WAIT_TIME = 3
+RB.consts.REQUEST_SETTINGS_AFTER_GROUP_CHANGE_WAIT_TIME = 5
 RB.consts.COLORS = {
 	HIGHLIGHT = "|cFF00FFFF",
 }
@@ -63,7 +65,8 @@ function RB:OnInitialize()
 	self.events:RegisterEvent("CHAT_MSG_SYSTEM", function(_, msg) RB:eventChatMsgSystem(msg) end)
 
 	self.buckets = LibStub("AceBucket-3.0")
-	self.buckets:RegisterBucketEvent("GROUP_ROSTER_UPDATE", 3, function() RB:eventGroupRosterUpdate() end)
+	self.buckets:RegisterBucketEvent("GROUP_ROSTER_UPDATE", self.consts.REPOST_SETTINGS_AFTER_GROUP_CHANGE_WAIT_TIME,
+		function() RB:eventGroupRosterUpdate() end)
 
 	self.console = LibStub("AceConsole-3.0")
 	local consoleCommandFunc = function(msg, editbox)
@@ -161,7 +164,7 @@ function RB:eventGroupRosterUpdate()
 		log("GroupRosterUpdate: Im now the master looter")
 		self:sendMasterLooterSettings()
 	else
-		self:scheduleTimer(self.checkMasterLooterChanged, 2)
+		self:scheduleTimer(self.checkMasterLooterChanged, self.consts.REQUEST_SETTINGS_AFTER_GROUP_CHANGE_WAIT_TIME)
 	end
 end
 
