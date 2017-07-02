@@ -129,7 +129,6 @@ function RB:restoreWindowPos(frame, array, defaultPos)
 
 	for point,posData in pairs(posArray) do
 		if point ~= self.consts.WINDOW_WIDTH and point ~= self.consts.WINDOW_HEIGHT then
-			log("RestoreWindowPos: SetPoint", point, posData.relativePoint, posData.xOfs, posData.yOfs)
 			frame:SetPoint(point, "UIParent", posData.relativePoint, posData.xOfs, posData.yOfs)
 		end
 	end
