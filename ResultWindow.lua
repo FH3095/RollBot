@@ -2,6 +2,16 @@
 local RB = RollBot
 local log = RollBotDebug.log
 
+local DEFAULT_POS = {
+	LEFT = {
+		relativePoint = "LEFT",
+		xOfs = 200,
+		yOfs = 0,
+	},
+	WndHeight = 300,
+	WndWidth = 200,
+}
+
 local function createWindowText(rolls, label)
 	local text = ""
 	for _,roll in ipairs(rolls) do
@@ -21,13 +31,14 @@ function RB:openResultWindow()
 	end
 	-- Create a container frame
 	local f = self.gui:Create("Window")
-	f:SetCallback("OnClose",function(widget) widget:Hide() end)
+	f:SetCallback("OnClose",function(widget)
+		RB.db.char.windowPositions.resultWindow = RB:getWindowPos(widget, true)
+		widget:Hide()
+	end)
 	f:SetTitle(self.l["RESULT_WINDOW_NAME"])
 	f:SetLayout("Fill")
 	f:EnableResize(true)
-	f:SetWidth(200)
-	f:SetHeight(300)
-	f:SetPoint("LEFT", "UIParent", "LEFT", 200, 0)
+	self:restoreWindowPos(f, self.db.char.windowPositions.resultWindow, DEFAULT_POS)
 
 	-- Create Multiline-Edit-Box for text
 	local text = self.gui:Create("MultiLineEditBox")

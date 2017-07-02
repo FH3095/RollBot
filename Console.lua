@@ -22,6 +22,9 @@ function RB:consoleParseCommand(msg, editbox)
 		self:resultClearRolls()
 	elseif cmd == "rolls" then
 		self:openRollWindow(nil)
+	elseif cmd == "resetwindows" then
+		self.db.char.windowPositions = {}
+		ReloadUI()
 	elseif cmd == "versions" then
 		self:scheduleTimer(self.consolePrintVersions, 7)
 		self.com:SendCommMessage(self.consts.ADDON_MSGS.getVersionReq, "", "RAID")
@@ -39,6 +42,8 @@ function RB:consolePrintHelp()
 	self.console:Printf("Possible " .. RB.consts.COLORS.HIGHLIGHT .. "/RollBot|r parameters:")
 	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Versions|r")
 	self.console:Printf("    Requests version from everyone in the raid, waits 7 seconds for response and then prints the versions")
+	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "ResetWindows|r")
+	self.console:Printf("    Resets the window positions and does a /reloadui.")
 	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "StartRoll ItemLink|r")
 	self.console:Printf("    Posts a raidwarning or raidmessage and let the raiders with the addon choose their roll")
 	self.console:Printf(RB.consts.COLORS.HIGHLIGHT .. "Results|r")

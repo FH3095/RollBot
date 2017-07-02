@@ -2,6 +2,14 @@
 local RB = RollBot
 local log = RollBotDebug.log
 
+local DEFAULT_POS = {
+	TOP = {
+		relativePoint = "TOP",
+		xOfs = 0,
+		yOfs = -200,
+	},
+}
+
 local function createRollWindowChilds(frame, itemLink)
 	local icon = RB.gui:Create("Icon")
 	-- Usually dont use .frame, but I treat this as an exception
@@ -31,7 +39,7 @@ local function createRollWindowChilds(frame, itemLink)
 		frame:AddChild(btn)
 		numButtons = numButtons + 1
 	end
-	
+
 	frame:SetHeight(28+64+10+numButtons*25+20)
 end
 
@@ -52,13 +60,17 @@ function RB:openRollWindow(itemLink)
 	end
 	-- Create a container frame
 	frame = self.gui:Create("Window")
-	frame:SetCallback("OnClose",function(widget) widget:ReleaseChildren() widget:Hide() end)
+	frame:SetCallback("OnClose",function(widget)
+		RB.db.char.windowPositions.rollWindow = RB:getWindowPos(widget, false)
+		widget:ReleaseChildren()
+		widget:Hide()
+	end)
 	frame:SetTitle(self.l["ROLL_WINDOW_NAME"])
 	frame:SetLayout("List")
 	frame:EnableResize(false)
-	frame:SetPoint("TOP", "UIParent", "TOP", 0, -200)
 	frame:SetWidth(220)
 	frame:SetHeight(300)
+	self:restoreWindowPos(frame, self.db.char.windowPositions.rollWindow, DEFAULT_POS)
 	self.vars.rollWindowVars["guiFrame"] = frame
 
 	createRollWindowChilds(frame, itemLink)

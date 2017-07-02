@@ -16,6 +16,8 @@ RB.consts = {}
 RB.consts.ADDON_MSGS = ADDON_MSGS
 RB.consts.ADDON_NAME = ADDON_NAME
 RB.consts.VERSION = VERSION
+RB.consts.WINDOW_HEIGHT = "WndHeight"
+RB.consts.WINDOW_WIDTH = "WndWidth"
 RB.consts.COLORS = {
 	HIGHLIGHT = "|cFF00FFFF",
 }
@@ -45,6 +47,9 @@ function RB:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New(ADDON_NAME .. "DB", self:GenerateDefaultOptions(), true)
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBotSettings", "RBS"})
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(ADDON_NAME)
+	if self.db.char.windowPositions == nil then
+		self.db.char.windowPositions = {}
+	end
 
 	self.com = LibStub("AceComm-3.0")
 	local addonCommandFunc = function(prefix, message, distribution, sender)

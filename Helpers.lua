@@ -94,3 +94,47 @@ function RB:startRoll(itemLink)
 	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, itemLink, "RAID")
 	SendChatMessage(self.db.profile.rollText:format(itemLink), chatMsgType)
 end
+
+function RB:isTableEmpty(tbl)
+	for _,_ in pairs(tbl) do
+		return false
+	end
+	return true
+end
+
+function RB:getWindowPos(frame, includeSize)
+	local result = {}
+
+	for i=1,frame:GetNumPoints() do
+		local point, _, relativePoint, xOfs, yOfs = frame:GetPoint(i)
+		local posData = { relativePoint = relativePoint, xOfs = xOfs, yOfs = yOfs }
+		result[point] = posData
+	end
+	if includeSize then
+		result[self.consts.WINDOW_WIDTH] = frame.frame:GetWidth()
+		result[self.consts.WINDOW_HEIGHT] = frame.frame:GetHeight()
+	end
+
+	log("saveWindowPos: Result", result)
+	return result
+end
+
+function RB:restoreWindowPos(frame, array, defaultPos)
+	log("RestoreWindowPos", array, defaultPos)
+
+	local posArray = array
+	if posArray == nil or RB:isTableEmpty(posArray) then
+		posArray = defaultPos
+	end
+
+	for point,posData in pairs(posArray) do
+		if point ~= self.consts.WINDOW_WIDTH and point ~= self.consts.WINDOW_HEIGHT then
+			log("RestoreWindowPos: SetPoint", point, posData.relativePoint, posData.xOfs, posData.yOfs)
+			frame:SetPoint(point, "UIParent", posData.relativePoint, posData.xOfs, posData.yOfs)
+		end
+	end
+	if posArray[self.consts.WINDOW_WIDTH] ~= nil and posArray[self.consts.WINDOW_HEIGHT] ~= nil then
+		frame:SetWidth(posArray[self.consts.WINDOW_WIDTH])
+		frame:SetHeight(posArray[self.consts.WINDOW_HEIGHT])
+	end
+end
