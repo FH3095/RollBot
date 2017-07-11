@@ -1,6 +1,6 @@
 
 local RB = RollBot
-local log = RollBotDebug.log
+local log = FH3095Debug.log
 
 local DEFAULT_POS = {
 	LEFT = {

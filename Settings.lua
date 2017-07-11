@@ -1,5 +1,5 @@
 
-local log = RollBotDebug.log
+local log = FH3095Debug.log
 local RB = RollBot
 
 

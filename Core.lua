@@ -8,7 +8,7 @@ local ADDON_MSGS = {
 	getVersionReq = ADDON_NAME .. "4",
 	getVersionResp = ADDON_NAME .. "5",
 }
-local log = RollBotDebug.log
+local log = FH3095Debug.log
 local RB = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME)
 RollBot = RB
 
@@ -27,6 +27,7 @@ RB.consts.ADDON_NAME_COLORED = RB.consts.COLORS.HIGHLIGHT .. RB.consts.ADDON_NAM
 RB.consts.UNKNOWN_ITEM_FALLBACK = "|cffffffff|Hitem:6948::::::::110:257::::::|h[Ruhestein]|h|r"
 
 function RB:OnInitialize()
+	FH3095Debug.onInit()
 	self.vars = {
 		masterLooter = nil,
 		rolls = {},

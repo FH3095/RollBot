@@ -1,6 +1,6 @@
 
 local RB = RollBot
-local log = RollBotDebug.log
+local log = FH3095Debug.log
 
 function RB:isMasterLooterActive()
 	local lootMethod = GetLootMethod()
