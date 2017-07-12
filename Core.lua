@@ -27,7 +27,6 @@ RB.consts.ADDON_NAME_COLORED = RB.consts.COLORS.HIGHLIGHT .. RB.consts.ADDON_NAM
 RB.consts.UNKNOWN_ITEM_FALLBACK = "|cffffffff|Hitem:6948::::::::110:257::::::|h[Ruhestein]|h|r"
 
 function RB:OnInitialize()
-	FH3095Debug.onInit()
 	self.vars = {
 		masterLooter = nil,
 		rolls = {},
@@ -94,6 +93,7 @@ function RB:OnInitialize()
 end
 
 function RB:OnEnable()
+	FH3095Debug.onEnable()
 	if self:isMasterLooterActive() then
 		if self:isMyselfMasterLooter() then
 			log("OnEnable: Currently in Raid -> Init and send loot options")
