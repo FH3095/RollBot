@@ -51,4 +51,5 @@ function FH3095Debug.onEnable()
 			return
 		end
 	end
+	FH3095Debug.isEnabled = true
 end
