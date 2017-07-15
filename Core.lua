@@ -174,6 +174,10 @@ function RB:eventChatMsgSystem(msg)
 	if (nil == rollUser) then
 		return
 	end
+	if tonumber(rollMin) ~= 1 then
+		log("EventChatMsgSystem: Invalid roll, not starting at 1", rollUser, roll, rollMin, rollMax)
+		return
+	end
 	log("EventChatMsgSystem, roll found", msg)
 	RB:resultAddRoll(rollUser, tonumber(roll), tonumber(rollMin), tonumber(rollMax))
 end
