@@ -1,0 +1,3 @@
+How to tag a previous tag as a release:
+
+git tag --message="Make Release" <version> <commit-id>
