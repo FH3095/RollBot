@@ -21,7 +21,7 @@ function RB:consoleParseCommand(msg, editbox)
 	elseif cmd == "resultsclear" then
 		self:resultClearRolls()
 	elseif cmd == "rolls" then
-		self:openRollWindow(nil)
+		self:openRollWindow(nil, false)
 	elseif cmd == "resetwindows" then
 		self.db.char.windowPositions = {}
 		ReloadUI()

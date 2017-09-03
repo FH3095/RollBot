@@ -10,7 +10,16 @@ local DEFAULT_POS = {
 	},
 }
 
-local function createRollWindowChilds(frame, itemLink)
+local function cancelRollWindowTimer()
+	if RB.vars.rollWindowVars["timerId"] ~= nil then
+		log("RollWindow: Cancel Timer")
+		RB.timers:CancelTimer(RB.vars.rollWindowVars["timerId"])
+		RB.vars.rollWindowVars["timerId"] = nil
+		RB.vars.rollWindowVars["rollTimeText"] = nil
+	end
+end
+
+local function createRollWindowChilds(frame, itemLink, startTimer)
 	local icon = RB.gui:Create("Icon")
 	-- Usually dont use .frame, but I treat this as an exception
 	icon:SetCallback("OnEnter", function()
@@ -28,6 +37,32 @@ local function createRollWindowChilds(frame, itemLink)
 	spacer:SetText(" ")
 	frame:AddChild(spacer)
 
+	local rollTimeGroup = RB.gui:Create("InlineGroup")
+	rollTimeGroup:SetTitle(RB.l['ROLL_TIME_LEFT'])
+	rollTimeGroup:SetRelativeWidth(1.0)
+	local rollTimeText = RB.gui:Create("Label")
+	if startTimer and RB.vars.rolls.rollTime > 0 then
+		rollTimeText:SetText(tostring(RB.vars.rolls.rollTime))
+		cancelRollWindowTimer()
+		RB.vars.rollWindowVars["timerCounter"] = RB.vars.rolls.rollTime
+		RB.vars.rollWindowVars["rollTimeText"] = rollTimeText
+		local function timerFunc()
+			RB.vars.rollWindowVars["timerCounter"] = RB.vars.rollWindowVars["timerCounter"] - 1
+			RB.vars.rollWindowVars["rollTimeText"]:SetText(tostring(RB.vars.rollWindowVars["timerCounter"]))
+			if RB.vars.rollWindowVars["timerCounter"] <= 0 then
+				cancelRollWindowTimer()
+				if RB.db.profile.closeRollWindowAfterRollTime then
+					frame:Hide()
+				end
+			end
+		end
+		RB.vars.rollWindowVars["timerId"] = RB.timers:ScheduleRepeatingTimer(timerFunc, 1)
+	else
+		rollTimeText:SetText("-")
+	end
+	rollTimeGroup:AddChild(rollTimeText)
+	frame:AddChild(rollTimeGroup)
+
 	local numButtons = 0
 	for _,roll in ipairs(RB.vars.rolls) do
 		local btn = RB.gui:Create("Button")
@@ -40,10 +75,10 @@ local function createRollWindowChilds(frame, itemLink)
 		numButtons = numButtons + 1
 	end
 
-	frame:SetHeight(28+64+10+numButtons*25+20)
+	frame:SetHeight(28+64+20+40+numButtons*25+20)
 end
 
-function RB:openRollWindow(itemLink)
+function RB:openRollWindow(itemLink, justStarted)
 	log("OpenRollWindow", itemLink)
 	if itemLink == nil then
 		itemLink = self.vars.rollWindowVars["lastItem"]
@@ -52,9 +87,10 @@ function RB:openRollWindow(itemLink)
 
 	local frame = self.vars.rollWindowVars["guiFrame"]
 	if frame ~= nil then
+		cancelRollWindowTimer()
 		frame:Hide()
 		frame:ReleaseChildren()
-		createRollWindowChilds(frame, itemLink)
+		createRollWindowChilds(frame, itemLink, justStarted)
 		frame:Show()
 		return
 	end
@@ -62,6 +98,7 @@ function RB:openRollWindow(itemLink)
 	frame = self.gui:Create("Window")
 	frame:SetCallback("OnClose",function(widget)
 		RB.db.char.windowPositions.rollWindow = RB:getWindowPos(widget, false)
+		cancelRollWindowTimer()
 		widget:ReleaseChildren()
 		widget:Hide()
 	end)
@@ -73,5 +110,5 @@ function RB:openRollWindow(itemLink)
 	self:restoreWindowPos(frame, self.db.char.windowPositions.rollWindow, DEFAULT_POS)
 	self.vars.rollWindowVars["guiFrame"] = frame
 
-	createRollWindowChilds(frame, itemLink)
+	createRollWindowChilds(frame, itemLink, justStarted)
 end

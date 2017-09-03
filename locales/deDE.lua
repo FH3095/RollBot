@@ -10,3 +10,5 @@ L['RESULT_WINDOW_NAME'] = 'Ergebnisse'
 L['ROLL_WINDOW_NAME'] = 'Würfel'
 L['EXPORT_WINDOW_NAME'] = 'Export'
 L['IMPORT_WINDOW_NAME'] = 'Import'
+L['ROLL_TIME_LEFT'] = "Verbleibende Zeit"
+L['ROLL_TIME_WINDOW_NAME'] = 'Würfel-Zeit'

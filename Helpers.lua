@@ -61,8 +61,27 @@ function RB:sendMasterLooterSettings()
 	self.com:SendCommMessage(self.consts.ADDON_MSGS.lootOptionsResp, data, "RAID")
 end
 
+function RB:convertOwnSettingsToRaidSettings()
+	local ret = {}
+	for i = 1,self.db.profile.numRollOptions do
+		ret[i] = self.db.profile.rolls[i]
+	end
+	ret["rollTime"] = self.db.profile.rollTime
+	return ret
+end
+
 function RB:doRoll(max)
 	RandomRoll(1, max)
+end
+
+function RB:sendChatMessage(msg)
+	local _, ownRank = self:getOwnRaidInfo()
+
+	local chatMsgType = self.db.profile.rollChatMsgType
+	if ownRank <= 0 and chatMsgType == "RAID_WARNING" then
+		chatMsgType = "RAID"
+	end
+	SendChatMessage(msg, chatMsgType)
 end
 
 function RB:startRoll(itemLink)
@@ -85,14 +104,11 @@ function RB:startRoll(itemLink)
 		return
 	end
 
-	local chatMsgType = self.db.profile.rollChatMsgType
-	if ownRank <= 0 and chatMsgType == "RAID_WARNING" then
-		chatMsgType = "RAID"
-	end
 	self:openResultWindow()
 	self:resultClearRolls()
 	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, itemLink, "RAID")
-	SendChatMessage(self.db.profile.rollText:format(itemLink), chatMsgType)
+	self:sendChatMessage(self.db.profile.rollText:format(itemLink, self.db.profile.rollTime))
+	self:openRollTimerWindowAndStart()
 end
 
 function RB:isTableEmpty(tbl)

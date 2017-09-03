@@ -10,3 +10,5 @@ L['RESULT_WINDOW_NAME'] = 'Results'
 L['ROLL_WINDOW_NAME'] = 'Rolls'
 L['EXPORT_WINDOW_NAME'] = 'Export'
 L['IMPORT_WINDOW_NAME'] = 'Import'
+L['ROLL_TIME_LEFT'] = "Remaining time"
+L['ROLL_TIME_WINDOW_NAME'] = 'Roll-time'

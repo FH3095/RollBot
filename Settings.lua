@@ -7,9 +7,12 @@ function RB:GenerateDefaultOptions()
 	local ret = {
 		profile = {
 			numRollOptions = 2,
-			rollText = "ROLL %s",
+			rollText = "ROLL %1$s, %2$d seconds",
 			openResultWindowOnStartRollByOtherPM = false,
 			rollChatMsgType = "RAID_WARNING",
+			rollTime = 30,
+			rollFinishChatMsg = "Roll finished!",
+			closeRollWindowAfterRollTime = true,
 			rolls ={
 				[1] = {
 					roll = 100,
@@ -111,10 +114,37 @@ function RB:GenerateOptions()
 							SAY = CHAT_MSG_SAY,
 							YELL = CHAT_MSG_YELL,
 						}
+					},
+					closeRollWindowAfterRollTime = {
+						name = "Automatically close roll window after roll time is expired",
+						type="toggle",
+						tristate = false,
 					}
 				}
 			},
 			rolls = rolls,
+			rollTime = {
+				name = "Roll time",
+				type = "group",
+				set = "SetBasicOption",
+				get = "GetBasicOption",
+				args = {
+					rollTime = {
+						type	= "range",
+						name	= "Time to roll (seconds)",
+						desc	= "Timer displayed until roll is finished, 0 to disable",
+						min		= 0,
+						max		= 3600,
+						softMax	= 180,
+						step	= 1,
+					},
+					rollFinishChatMsg = {
+						type	= "input",
+						name	= "Text to post when roll is finished",
+						multiline = false,
+					},
+				}
+			},
 		},
 	}
 	--log("Options table", ret)

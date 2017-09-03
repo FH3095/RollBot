@@ -40,6 +40,8 @@ function RB:OnInitialize()
 			lastItem = self.consts.UNKNOWN_ITEM_FALLBACK,
 			guiFrame = nil,
 		},
+		rollTimeWindowVars = {
+		}
 	}
 	self.l = LibStub("AceLocale-3.0"):GetLocale("RollBot", false)
 	self.timers = LibStub("AceTimer-3.0")
@@ -96,7 +98,7 @@ function RB:OnEnable()
 	if self:isMasterLooterActive() then
 		if self:isMyselfMasterLooter() then
 			log("OnEnable: Currently in Raid -> Init and send loot options")
-			self.vars.rolls = self.db.profile.rolls
+			self.vars.rolls = self:convertOwnSettingsToRaidSettings()
 			self:sendMasterLooterSettings()
 		else
 			log("OnEnable: Currently in Raid -> Request loot options")
@@ -135,11 +137,12 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 			return
 		end
 		log("ComAddonMsg start roll", sender, message)
-		self:openRollWindow(message)
+		self:openRollWindow(message, true)
 		-- Clear results (also if player opened window via cmd)
 		self:resultClearRolls()
 		if self.db.profile.openResultWindowOnStartRollByOtherPM and not self:isMyselfMasterLooter() then
 			self:openResultWindow()
+			self:openRollTimerWindowAndStart()
 		end
 	elseif prefix == ADDON_MSGS.getVersionReq then
 		self.com:SendCommMessage(ADDON_MSGS.getVersionResp, VERSION, "RAID")
@@ -160,7 +163,7 @@ end
 
 function RB:eventGroupRosterUpdate()
 	if self:isMyselfMasterLooter() then
-		self.vars.rolls = self.db.profile.rolls
+		self.vars.rolls = self:convertOwnSettingsToRaidSettings()
 		log("GroupRosterUpdate: Im now the master looter")
 		self:sendMasterLooterSettings()
 	else

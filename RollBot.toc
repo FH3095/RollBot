@@ -18,4 +18,5 @@ Settings.lua
 Console.lua
 RollWindow.lua
 ResultWindow.lua
+RollTimerWindow.lua
 ImportExportWindow.lua
