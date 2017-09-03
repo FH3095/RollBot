@@ -17,7 +17,7 @@ local function createWindowText(rolls, label)
 	for _,roll in ipairs(rolls) do
 		text = text .. roll["name"] .. " : " .. roll["roll"] .. " ("
 		if roll["rollType"] ~= nil then
-			text = text .. roll["rollType"] .. " / "
+			text = text .. roll["rollType"] .. " | "
 		end
 		text = text .. roll["rollMin"] .. "-" .. roll["rollMax"] .. ")\n"
 	end
