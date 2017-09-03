@@ -34,6 +34,11 @@ function RB:MigrateOptions()
 	end
 end
 
+function RB:RefreshOptions()
+	local config = LibStub("AceConfig-3.0")
+	config:RegisterOptionsTable(RB.consts.ADDON_NAME, self:GenerateOptions(), {"RollBotSettings", "RBS"})
+end
+
 function RB:GenerateOptions()
 	local rolls = {
 		type	= "group",
@@ -122,8 +127,7 @@ function RB:SetBasicOption(info, value)
 	log("Set option", info[#info], value)
 	self.db.profile[info[#info]] = value
 	if info[#info] == "numRollOptions" then
-		local config = LibStub("AceConfig-3.0")
-		config:RegisterOptionsTable(RB.consts.ADDON_NAME, self:GenerateOptions(), {"RollBotSettings", "RBS"})
+		self:RefreshOptions()
 	end
 end
 

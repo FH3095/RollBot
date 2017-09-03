@@ -48,7 +48,7 @@ function RB:OnInitialize()
 
 	self.db = LibStub("AceDB-3.0"):New(ADDON_NAME .. "DB", self:GenerateDefaultOptions(), true)
 	self:MigrateOptions()
-	self.db.RegisterCallback(self, "OnProfileChanged", function() RB:MigrateOptions() end)
+	self.db.RegisterCallback(self, "OnProfileChanged", function() RB:MigrateOptions(); RB:RefreshOptions() end)
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBotSettings", "RBS"})
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(ADDON_NAME)
 
@@ -178,5 +178,12 @@ function RB:eventChatMsgSystem(msg)
 		return
 	end
 	log("EventChatMsgSystem, roll found", msg)
-	RB:resultAddRoll(rollUser, tonumber(roll), tonumber(rollMin), tonumber(rollMax))
+	local rollType = nil
+	for _,roll in ipairs(self.vars.rolls) do
+		if tonumber(rollMax) == roll["roll"] then
+			rollType = roll["name"]
+			break
+		end
+	end
+	RB:resultAddRoll(rollUser, tonumber(roll), tonumber(rollMin), tonumber(rollMax), rollType)
 end

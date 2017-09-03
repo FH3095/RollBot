@@ -9,13 +9,17 @@ local DEFAULT_POS = {
 		yOfs = 0,
 	},
 	WndHeight = 300,
-	WndWidth = 200,
+	WndWidth = 400,
 }
 
 local function createWindowText(rolls, label)
 	local text = ""
 	for _,roll in ipairs(rolls) do
-		text = text .. roll["name"] .. " : " .. roll["roll"] .. " (" .. roll["rollMin"] .. "-" .. roll["rollMax"] .. ")\n"
+		text = text .. roll["name"] .. " : " .. roll["roll"] .. " ("
+		if roll["rollType"] ~= nil then
+			text = text .. roll["rollType"] .. " = "
+		end
+		text = text .. roll["rollMin"] .. "-" .. roll["rollMax"] .. ")\n"
 	end
 	-- If label is not initalized, no text update is needed
 	if label ~= nil then
@@ -54,8 +58,8 @@ function RB:openResultWindow()
 	createWindowText(self.vars.resultWindowVars["rolls"], text)
 end
 
-function RB:resultAddRoll(name, roll, rollMin, rollMax)
-	log("ResultAddRoll", name, roll, rollMin, rollMax)
+function RB:resultAddRoll(name, roll, rollMin, rollMax, rollType)
+	log("ResultAddRoll", name, roll, rollMin, rollMax, rollType)
 	local vars = self.vars.resultWindowVars
 	local function sortFunc(r1,r2)
 		if(r1["rollMax"]==r2["rollMax"]) then
@@ -65,7 +69,7 @@ function RB:resultAddRoll(name, roll, rollMin, rollMax)
 		end
 	end
 
-	tinsert(vars["rolls"], {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax})
+	tinsert(vars["rolls"], {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax, rollType = rollType})
 	sort(vars["rolls"], sortFunc)
 	createWindowText(vars["rolls"], vars["guiLabel"])
 end
