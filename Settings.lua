@@ -9,6 +9,7 @@ function RB:GenerateDefaultOptions()
 			numRollOptions = 2,
 			rollText = "ROLL %s",
 			openResultWindowOnStartRollByOtherPM = false,
+			rollChatMsgType = "RAID_WARNING",
 			rolls ={
 				[1] = {
 					roll = 100,
@@ -22,6 +23,15 @@ function RB:GenerateDefaultOptions()
 		}
 	}
 	return ret
+end
+
+function RB:MigrateOptions()
+	if self.db.char.windowPositions == nil then
+		self.db.char.windowPositions = {}
+	end
+	if self.db.profile.rollChatMsgType == nil then
+		self.db.profile.rollChatMsgType = "RAID_WARNING"
+	end
 end
 
 function RB:GenerateOptions()
@@ -87,6 +97,16 @@ function RB:GenerateOptions()
 						type = "toggle",
 						tristate = false,
 					},
+					rollChatMsgType = {
+						name = "Post roll text to",
+						type = "select",
+						values = {
+							RAID_WARNING = CHAT_MSG_RAID_WARNING,
+							RAID = CHAT_MSG_RAID,
+							SAY = CHAT_MSG_SAY,
+							YELL = CHAT_MSG_YELL,
+						}
+					}
 				}
 			},
 			rolls = rolls,

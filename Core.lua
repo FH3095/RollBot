@@ -47,11 +47,10 @@ function RB:OnInitialize()
 	self.gui = LibStub("AceGUI-3.0")
 
 	self.db = LibStub("AceDB-3.0"):New(ADDON_NAME .. "DB", self:GenerateDefaultOptions(), true)
+	self:MigrateOptions()
+	self.db.RegisterCallback(self, "OnProfileChanged", function() RB:MigrateOptions() end)
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(ADDON_NAME, self:GenerateOptions(), {"RollBotSettings", "RBS"})
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(ADDON_NAME)
-	if self.db.char.windowPositions == nil then
-		self.db.char.windowPositions = {}
-	end
 
 	self.com = LibStub("AceComm-3.0")
 	local addonCommandFunc = function(prefix, message, distribution, sender)

@@ -85,9 +85,9 @@ function RB:startRoll(itemLink)
 		return
 	end
 
-	local chatMsgType = "RAID"
-	if ownRank > 0 then
-		chatMsgType = "RAID_WARNING"
+	local chatMsgType = self.db.profile.rollChatMsgType
+	if ownRank <= 0 and chatMsgType == "RAID_WARNING" then
+		chatMsgType = "RAID"
 	end
 	self:openResultWindow()
 	self:resultClearRolls()
