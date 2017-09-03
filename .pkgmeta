@@ -16,6 +16,5 @@ externals:
     libs/Ace3/AceBucket-3.0: https://repos.wowace.com/wow/ace3/trunk/AceBucket-3.0
 enable-nolib-creation: no
 ignore:
-  - libs
   - HowToRelease.txt
 license-output: LICENSE
