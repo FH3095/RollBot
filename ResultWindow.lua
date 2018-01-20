@@ -12,14 +12,34 @@ local DEFAULT_POS = {
 	WndWidth = 400,
 }
 
-local function createWindowText(rolls, label)
+local function createWindowText(rolls, label, item)
+	local inspectDb = nil
+	local rollItemEquipLoc = nil
+	if GExRT ~= nil and GExRT.A.Inspect ~= nil and GExRT.A.Inspect.db.inspectDB ~= nil then
+		inspectDb = GExRT.A.Inspect.db.inspectDB
+	end
+	if item ~= nil then
+		rollItemEquipLoc = select(9,GetItemInfo(item))
+	end
 	local text = ""
 	for _,roll in ipairs(rolls) do
 		text = text .. roll["name"] .. " : " .. roll["roll"] .. " ("
 		if roll["rollType"] ~= nil then
 			text = text .. roll["rollType"] .. " | "
 		end
-		text = text .. roll["rollMin"] .. "-" .. roll["rollMax"] .. ")\n"
+		text = text .. roll["rollMin"] .. "-" .. roll["rollMax"] .. ")"
+		if RB.db.profile.showRollersCurrentItems and rollItemEquipLoc ~= nil and
+			inspectDb ~= nil and inspectDb[roll["name"]] ~= nil and inspectDb[roll["name"]].items ~= nil then
+			for _,curItem in pairs(inspectDb[roll["name"]].items) do
+				local _,_,itemRarity,itemLevel,_,_,_,_,itemEquipLoc = GetItemInfo(curItem)
+				if itemEquipLoc == rollItemEquipLoc then
+					local _,_,_,itemCcolor = GetItemQualityColor(itemRarity)
+					text = text .. " |c" .. itemCcolor .. "[GS:" .. itemLevel .. "]|r"
+				end
+			end
+			-- TODO Implement show item. Befor that: Rewrite Result window so that I can display that item...
+		end
+		text = text .. "\n"
 	end
 	-- If label is not initalized, no text update is needed
 	if label ~= nil then
@@ -55,7 +75,7 @@ function RB:openResultWindow()
 	f:AddChild(text)
 	self.vars.resultWindowVars["guiLabel"] = text
 	self.vars.resultWindowVars["guiFrame"] = f
-	createWindowText(self.vars.resultWindowVars["rolls"], text)
+	createWindowText(self.vars.resultWindowVars["rolls"], text, self.vars.lastRollItem)
 end
 
 function RB:resultAddRoll(name, roll, rollMin, rollMax, rollType)
@@ -71,7 +91,7 @@ function RB:resultAddRoll(name, roll, rollMin, rollMax, rollType)
 
 	tinsert(vars["rolls"], {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax, rollType = rollType})
 	sort(vars["rolls"], sortFunc)
-	createWindowText(vars["rolls"], vars["guiLabel"])
+	createWindowText(vars["rolls"], vars["guiLabel"], self.vars.lastRollItem)
 end
 
 function RB:resultClearRolls()

@@ -29,6 +29,7 @@ RB.consts.UNKNOWN_ITEM_FALLBACK = "|cffffffff|Hitem:6948::::::::110:257::::::|h[
 function RB:OnInitialize()
 	self.vars = {
 		masterLooter = nil,
+		lastRollItem = self.consts.UNKNOWN_ITEM_FALLBACK,
 		rolls = {},
 		versions = {},
 		resultWindowVars = {
@@ -37,7 +38,6 @@ function RB:OnInitialize()
 			guiFrame = nil,
 		},
 		rollWindowVars = {
-			lastItem = self.consts.UNKNOWN_ITEM_FALLBACK,
 			guiFrame = nil,
 		},
 		rollTimeWindowVars = {

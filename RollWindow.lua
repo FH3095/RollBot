@@ -81,9 +81,9 @@ end
 function RB:openRollWindow(itemLink, justStarted)
 	log("OpenRollWindow", itemLink)
 	if itemLink == nil then
-		itemLink = self.vars.rollWindowVars["lastItem"]
+		itemLink = self.vars.lastRollItem
 	end
-	self.vars.rollWindowVars["lastItem"] = itemLink
+	self.vars.lastRollItem = itemLink
 
 	local frame = self.vars.rollWindowVars["guiFrame"]
 	if frame ~= nil then

@@ -9,6 +9,7 @@ function RB:GenerateDefaultOptions()
 			numRollOptions = 2,
 			rollText = "ROLL %1$s, %2$d seconds",
 			openResultWindowOnStartRollByOtherPM = false,
+			showRollersCurrentItems = false,
 			rollChatMsgType = "RAID_WARNING",
 			rollTime = 30,
 			rollFinishChatMsg = "Roll finished!",
@@ -34,6 +35,9 @@ function RB:MigrateOptions()
 	end
 	if self.db.profile.rollChatMsgType == nil then
 		self.db.profile.rollChatMsgType = "RAID_WARNING"
+	end
+	if self.db.profile.showRollersCurrentItems == nil then
+		self.db.profile.showRollersCurrentItems = false
 	end
 end
 
@@ -118,6 +122,11 @@ function RB:GenerateOptions()
 					closeRollWindowAfterRollTime = {
 						name = "Automatically close roll window after roll time is expired",
 						type="toggle",
+						tristate = false,
+					},
+					showRollersCurrentItems = {
+						name = "Show the items, the rollers are currently wearing (requires exorsus raid tools)",
+						type = "toggle",
 						tristate = false,
 					}
 				}
