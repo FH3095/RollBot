@@ -30,6 +30,7 @@ function RB:consoleParseCommand(msg, editbox)
 	elseif cmd == "export" then
 		self:openImportExportWindow(true)
 	elseif cmd == "versions" then
+		self.console:Printf(self.consts.ADDON_NAME_COLORED .. " Sending versions query to raid. Result will be shown in 7 seconds.")
 		self:scheduleTimer(self.consolePrintVersions, 7)
 		self.com:SendCommMessage(self.consts.ADDON_MSGS.getVersionReq, "", "RAID")
 	else
