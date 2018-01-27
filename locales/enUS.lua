@@ -17,4 +17,4 @@ L['RESULT_COLUMN_ROLL'] = "Roll"
 L['RESULT_COLUMN_ROLLTYPE'] = "Roll Type"
 L['RESULT_COLUMN_ITEM1'] = "Item 1"
 L['RESULT_COLUMN_ITEM2'] = "Item 2"
- 
+L['GS'] = "GS"

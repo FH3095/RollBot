@@ -118,6 +118,15 @@ function wnd:createWindow()
 	self:showWindow()
 end
 
+function wnd:getItemText(itemLink)
+	local _,_,itemRarity,itemLevel = GetItemInfo(itemLink)
+	if itemRarity == nil or itemLevel == nil then
+		return "[" .. RB.l["GS"] .. ": ? ]"
+	end
+	local _,_,_,itemCcolor = GetItemQualityColor(itemRarity)
+	return "|c" .. itemCcolor .. "[" .. RB.l["GS"] .. ":" .. itemLevel .. "]|r"
+end
+
 function wnd:fillTableData()
 	local rolls = self.vars.rolls
 	local data = {}
@@ -130,8 +139,9 @@ function wnd:fillTableData()
 		end
 		rollType = rollType .. roll.rollMin .. "-" .. roll.rollMax .. ")"
 
-		local item1 = roll.item1
-		local item2 = roll.item2
+		local item1Text = self:getItemText(roll.item1)
+		local item2Text = self:getItemText(roll.item2)
+
 
 		local row = {
 			rb_sort = sortValue,
@@ -139,8 +149,8 @@ function wnd:fillTableData()
 				{value = roll.name},
 				{value = roll.roll},
 				{value = rollType},
-				{value = item1, rb_item = RB.consts.UNKNOWN_ITEM_FALLBACK,},
-				{value = item2, rb_item = RB.consts.UNKNOWN_ITEM_FALLBACK,}
+				{value = item1Text, rb_item = roll.item1,},
+				{value = item2Text, rb_item = roll.item2,}
 			},
 		}
 		tinsert(data, row)
@@ -160,7 +170,8 @@ function wnd:addRoll(name, roll, rollMin, rollMax, rollType, forItem)
 		end
 	end
 
-	tinsert(vars.rolls, {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax, rollType = rollType, item1 = "i1", item2 = "i2",})
+	tinsert(vars.rolls, {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax, rollType = rollType,
+		item1 = RB.consts.UNKNOWN_ITEM_FALLBACK, item2 = "|cff9d9d9d|Hitem:3299::::::::20:257::::::|h[Fractured Canine]|h|r",})
 	sort(vars.rolls, sortFunc)
 	self:fillTableData()
 end
