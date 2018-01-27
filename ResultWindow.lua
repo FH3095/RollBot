@@ -1,6 +1,13 @@
 
 local RB = RollBot
+local libST = LibStub("ScrollingTable")
 local log = FH3095Debug.log
+local wnd = {
+	vars = {
+		rolls = {},
+	},
+}
+
 
 local DEFAULT_POS = {
 	LEFT = {
@@ -12,14 +19,147 @@ local DEFAULT_POS = {
 	WndWidth = 400,
 }
 
+function wnd:showWindow()
+	log("ResultWindow:showWindow")
+	local settings = RB.db.profile.resultWindowSettings
+	local window = self.vars.window
+	local table = self.vars.table
+
+	local cols = {
+		{
+			name = RB.l["RESULT_COLUMN_NAME"],
+			width = settings.nameColumnSize,
+		},
+		{
+			name = RB.l["RESULT_COLUMN_ROLL"],
+			width = settings.rollColumnSize,
+			align = "RIGHT",
+		},
+		{
+			name = RB.l["RESULT_COLUMN_ROLLTYPE"],
+			width = settings.rollTypeColumnSize,
+		},
+		{
+			name = RB.l["RESULT_COLUMN_ITEM1"],
+			width = settings.item1ColumnSize,
+		},
+		{
+			name = RB.l["RESULT_COLUMN_ITEM2"],
+			width = settings.item2ColumnSize,
+		}
+	}
+	window:SetWidth(settings.nameColumnSize + settings.rollColumnSize +
+		settings.rollTypeColumnSize + settings.item1ColumnSize + settings.item2ColumnSize + 60)
+	window:SetHeight(settings.rowHeight * settings.numRows + 120)
+
+	table:SetDisplayCols(cols)
+	table:SetDisplayRows(settings.numRows, settings.rowHeight)
+	table:EnableSelection(false)
+
+	self:fillTableData()
+	window:Show()
+end
+
+function wnd:createWindow()
+	log("ResultWindow:createWindow")
+	if self.vars.window ~= nil then
+		self:showWindow()
+		return
+	end
+
+	log("ResultWindow: Create new window")
+	local window = RB.gui:Create("Window")
+	window:SetCallback("OnClose",function(widget)
+		RB.db.char.windowPositions.resultWindow = RB:getWindowPos(widget, true)
+		widget:Hide()
+	end)
+	window:SetTitle(RB.l["RESULT_WINDOW_NAME"])
+	window:SetLayout("Fill")
+	window:EnableResize(false)
+	RB:restoreWindowPos(window, RB.db.char.windowPositions.resultWindow, DEFAULT_POS)
+
+
+	local settings = RB.db.profile.resultWindowSettings
+
+	local table = libST:CreateST({}, settings.numRows, settings.rowHeight, nil, window.frame)
+	table.frame:SetPoint("CENTER", window.frame, "CENTER")
+	table.CompareSort = function(self, rowa, rowb, sortBy)
+		local r1 = self:GetRow(rowa)
+		local r2 = self:GetRow(rowb)
+		log("CompareFunc", r1.rb_sort, r2.rb_sort)
+		return r1.rb_sort < r2.rb_sort
+	end
+
+
+	self.vars.window = window
+	self.vars.table = table
+
+	self:showWindow()
+end
+
+function wnd:fillTableData()
+	local rolls = self.vars.rolls
+	local data = {}
+
+	local sortValue = 1
+	for _,roll in ipairs(rolls) do
+		local rollType = "("
+		if roll.rollType ~= nil then
+			rollType = rollType .. roll.rollType .. " | "
+		end
+		rollType = rollType .. roll.rollMin .. "-" .. roll.rollMax .. ")"
+
+		local item1 = roll.item1
+		local item2 = roll.item2
+
+		local row = {
+			rb_sort = sortValue,
+			cols = {
+				{value = roll.name},
+				{value = roll.roll},
+				{value = rollType},
+				{value = item1},
+				{value = item2,}
+			},
+		}
+		tinsert(data, row)
+		sortValue = sortValue + 1
+	end
+	self.vars.table:SetData(data, false)
+end
+
+function wnd:addRoll(name, roll, rollMin, rollMax, rollType, forItem)
+	log("ResultWindow:addRoll", name, roll, rollMin, rollMax, rollType, forItem)
+	local vars = self.vars
+	local function sortFunc(r1,r2)
+		if(r1.rollMax~=r2.rollMax) then
+			return r1.rollMax > r2.rollMax
+		else
+			return r1.roll > r2.roll
+		end
+	end
+
+	tinsert(vars.rolls, {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax, rollType = rollType, item1 = "i1", item2 = "i2",})
+	sort(vars.rolls, sortFunc)
+	self:fillTableData()
+end
+
+function wnd:clearRolls()
+	self.vars.rolls = {}
+	self:fillTableData()
+end
+
 local function createWindowText(rolls, label, item)
+	if useTable then
+		return
+	end
 	local inspectDb = nil
 	local rollItemEquipLoc = nil
 	if GExRT ~= nil and GExRT.A.Inspect ~= nil and GExRT.A.Inspect.db.inspectDB ~= nil then
 		inspectDb = GExRT.A.Inspect.db.inspectDB
 	end
 	if item ~= nil then
-		rollItemEquipLoc = select(9,GetItemInfo(item))
+		rollItemEquipLoc = select(9, GetItemInfo(item))
 	end
 	local text = ""
 	for _,roll in ipairs(rolls) do
@@ -28,7 +168,7 @@ local function createWindowText(rolls, label, item)
 			text = text .. roll["rollType"] .. " | "
 		end
 		text = text .. roll["rollMin"] .. "-" .. roll["rollMax"] .. ")"
-		if RB.db.profile.showRollersCurrentItems and rollItemEquipLoc ~= nil and
+		if RB.db.profile.showRollersCurrentItems and rollItemEquipLoc ~= "" and
 			inspectDb ~= nil and inspectDb[roll["name"]] ~= nil and inspectDb[roll["name"]].items ~= nil then
 			for _,curItem in pairs(inspectDb[roll["name"]].items) do
 				local _,_,itemRarity,itemLevel,_,_,_,_,itemEquipLoc = GetItemInfo(curItem)
@@ -48,53 +188,13 @@ local function createWindowText(rolls, label, item)
 end
 
 function RB:openResultWindow()
-	log("OpenResultWindow")
-	if self.vars.resultWindowVars["guiFrame"] ~= nil then
-		self.vars.resultWindowVars["guiFrame"]:Show()
-		return
-	end
-	-- Create a container frame
-	local f = self.gui:Create("Window")
-	f:SetCallback("OnClose",function(widget)
-		RB.db.char.windowPositions.resultWindow = RB:getWindowPos(widget, true)
-		widget:Hide()
-	end)
-	f:SetTitle(self.l["RESULT_WINDOW_NAME"])
-	f:SetLayout("Fill")
-	f:EnableResize(true)
-	self:restoreWindowPos(f, self.db.char.windowPositions.resultWindow, DEFAULT_POS)
-
-	-- Create Multiline-Edit-Box for text
-	local text = self.gui:Create("MultiLineEditBox")
-	text:SetText("")
-	text:SetLabel("")
-	text:DisableButton(true)
-	text:SetDisabled(true)
-	-- hack to set textcolor back to 1. I want a readonly box
-	text.editBox:SetTextColor(1, 1, 1)
-	f:AddChild(text)
-	self.vars.resultWindowVars["guiLabel"] = text
-	self.vars.resultWindowVars["guiFrame"] = f
-	createWindowText(self.vars.resultWindowVars["rolls"], text, self.vars.lastRollItem)
+	wnd:createWindow()
 end
 
 function RB:resultAddRoll(name, roll, rollMin, rollMax, rollType)
-	log("ResultAddRoll", name, roll, rollMin, rollMax, rollType)
-	local vars = self.vars.resultWindowVars
-	local function sortFunc(r1,r2)
-		if(r1["rollMax"]==r2["rollMax"]) then
-			return r1["roll"] > r2["roll"]
-		else
-			return r1["rollMax"] > r2["rollMax"]
-		end
-	end
-
-	tinsert(vars["rolls"], {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax, rollType = rollType})
-	sort(vars["rolls"], sortFunc)
-	createWindowText(vars["rolls"], vars["guiLabel"], self.vars.lastRollItem)
+	wnd:addRoll(name, roll, rollMin, rollMax, rollTye, self.vars.lastRollItem)
 end
 
 function RB:resultClearRolls()
-	self.vars.resultWindowVars["rolls"] = {}
-	createWindowText(self.vars.resultWindowVars["rolls"], self.vars.resultWindowVars["guiLabel"])
+	wnd:clearRolls()
 end

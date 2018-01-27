@@ -39,6 +39,17 @@ function RB:MigrateOptions()
 	if self.db.profile.showRollersCurrentItems == nil then
 		self.db.profile.showRollersCurrentItems = false
 	end
+	if self.db.profile.resultWindowSettings == nil then
+		self.db.profile.resultWindowSettings = {
+			nameColumnSize = 100,
+			rollColumnSize = 35,
+			rollTypeColumnSize = 100,
+			item1ColumnSize = 50,
+			item2ColumnSize = 50,
+			rowHeight = 15,
+			numRows = 10,
+		}
+	end
 end
 
 function RB:RefreshOptions()
@@ -79,6 +90,71 @@ function RB:GenerateOptions()
 		}
 		rolls.args[tostring(i)] = roll
 	end
+
+	local resultWindowOptions = {
+		type 	= "group",
+		name	= "Result Window",
+		set		= "SetResultWindowOption",
+		get		= "GetResultWindowOption",
+		args = {
+			nameColumnSize = {
+				type	= "range",
+				name	= "Name Column Size",
+				min		= 1,
+				max		= 10000,
+				softMax	= 2000,
+				step	= 1,
+			},
+			rollColumnSize = {
+				type	= "range",
+				name	= "Roll Result Column Size",
+				min		= 1,
+				max		= 10000,
+				softMax	= 2000,
+				step	= 1,
+			},
+			rollTypeColumnSize = {
+				type	= "range",
+				name	= "Roll Type Column Size",
+				min		= 1,
+				max		= 10000,
+				softMax	= 2000,
+				step	= 1,
+			},
+			item1ColumnSize = {
+				type	= "range",
+				name	= "Item 1 Column Size",
+				min		= 1,
+				max		= 10000,
+				softMax	= 2000,
+				step	= 1,
+			},
+			item2ColumnSize = {
+				type	= "range",
+				name	= "Item 2 Column Size",
+				min		= 1,
+				max		= 10000,
+				softMax	= 2000,
+				step	= 1,
+			},
+			rowHeight = {
+				type	= "range",
+				name	= "Row Height",
+				min		= 1,
+				max		= 10000,
+				softMax	= 30,
+				step	= 1,
+			},
+			numRows = {
+				type	= "range",
+				name	= "Number of Rows",
+				min		= 3,
+				max		= 1000,
+				softMax	= 40,
+				step	= 1,
+			},
+		},
+	}
 
 	local ret = {
 		name = RB.consts.ADDON_NAME,
@@ -154,6 +230,7 @@ function RB:GenerateOptions()
 					},
 				}
 			},
+			resultWindowSettings = resultWindowOptions,
 		},
 	}
 	--log("Options table", ret)
@@ -191,4 +268,13 @@ function RB:GetRollOption(info)
 		return nil
 	end
 	return self.db.profile.rolls[rollName][rollOption]
+end
+
+function RB:SetResultWindowOption(info, value)
+	log("Set result window option", info[#info], value)
+	self.db.profile.resultWindowSettings[info[#info]] = value
+end
+
+function RB:GetResultWindowOption(info)
+	return self.db.profile.resultWindowSettings[info[#info]]
 end

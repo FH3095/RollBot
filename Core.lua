@@ -32,11 +32,6 @@ function RB:OnInitialize()
 		lastRollItem = self.consts.UNKNOWN_ITEM_FALLBACK,
 		rolls = {},
 		versions = {},
-		resultWindowVars = {
-			rolls = {},
-			guiLabel = nil,
-			guiFrame = nil,
-		},
 		rollWindowVars = {
 			guiFrame = nil,
 		},

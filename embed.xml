@@ -15,4 +15,6 @@
 	<Include file="libs\Ace3\AceSerializer-3.0\AceSerializer-3.0.xml" />
 	<Include file="libs\Ace3\AceEvent-3.0\AceEvent-3.0.xml" />
 	<Include file="libs\Ace3\AceBucket-3.0\AceBucket-3.0.xml" />
+	<Include file="libs\lib-st\lib-st.xml" />
+	<Script file="libs\LibInspect\LibInspect.lua" />
 </Ui>
