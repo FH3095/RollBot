@@ -90,6 +90,27 @@ function wnd:createWindow()
 		return r1.rb_sort < r2.rb_sort
 	end
 
+	local onLeaveHideToolTip = function()
+		GameTooltip:Hide()
+		return false
+	end
+	local onEnterShowToolTip = function(rowFrame, cellFrame, data, cols, row, realrow, column, scrollingTable, ...)
+		if realrow == nil or column == nil or data == nil or cellFrame == nil then
+			return false
+		end
+
+		local celldata = data[realrow].cols[column]
+		if celldata.rb_item == nil then
+			return false
+		end
+
+		GameTooltip:SetOwner(cellFrame, "ANCHOR_LEFT")
+		GameTooltip:SetHyperlink(celldata.rb_item)
+		GameTooltip:Show()
+		return false
+	end
+	table:RegisterEvents({OnEnter = onEnterShowToolTip, OnLeave = onLeaveHideToolTip})
+
 
 	self.vars.window = window
 	self.vars.table = table
@@ -118,8 +139,8 @@ function wnd:fillTableData()
 				{value = roll.name},
 				{value = roll.roll},
 				{value = rollType},
-				{value = item1},
-				{value = item2,}
+				{value = item1, rb_item = RB.consts.UNKNOWN_ITEM_FALLBACK,},
+				{value = item2, rb_item = RB.consts.UNKNOWN_ITEM_FALLBACK,}
 			},
 		}
 		tinsert(data, row)
