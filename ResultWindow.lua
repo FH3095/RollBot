@@ -156,7 +156,9 @@ function wnd:fillTableData()
 		tinsert(data, row)
 		sortValue = sortValue + 1
 	end
-	self.vars.table:SetData(data, false)
+	if self.vars.table ~= nil then
+		self.vars.table:SetData(data, false)
+	end
 end
 
 function wnd:addRoll(name, roll, rollMin, rollMax, rollType, forItem)
@@ -224,7 +226,7 @@ function RB:openResultWindow()
 end
 
 function RB:resultAddRoll(name, roll, rollMin, rollMax, rollType)
-	wnd:addRoll(name, roll, rollMin, rollMax, rollTye, self.vars.lastRollItem)
+	wnd:addRoll(name, roll, rollMin, rollMax, rollType, self.vars.lastRollItem)
 end
 
 function RB:resultClearRolls()
