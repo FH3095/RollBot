@@ -44,8 +44,8 @@ function RB:MigrateOptions()
 			nameColumnSize = 100,
 			rollColumnSize = 35,
 			rollTypeColumnSize = 100,
-			item1ColumnSize = 50,
-			item2ColumnSize = 50,
+			item1ColumnSize = 60,
+			item2ColumnSize = 60,
 			rowHeight = 15,
 			numRows = 10,
 		}

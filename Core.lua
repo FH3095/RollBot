@@ -100,6 +100,7 @@ function RB:OnEnable()
 			self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
 		end
 	end
+	self:inspectStart()
 end
 
 function RB:comAddonMsg(prefix, message, distribution, sender)

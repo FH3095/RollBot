@@ -119,6 +119,9 @@ function wnd:createWindow()
 end
 
 function wnd:getItemText(itemLink)
+	if itemLink == nil then
+		return ""
+	end
 	local _,_,itemRarity,itemLevel = GetItemInfo(itemLink)
 	if itemRarity == nil or itemLevel == nil then
 		return "[" .. RB.l["GS"] .. ": ? ]"
@@ -172,8 +175,10 @@ function wnd:addRoll(name, roll, rollMin, rollMax, rollType, forItem)
 		end
 	end
 
+	local _,_,_,itemEquipLoc = GetItemInfoInstant(forItem)
+	local items = RB:inspectGetItemForSlot(name, itemEquipLoc)
 	tinsert(vars.rolls, {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax, rollType = rollType,
-		item1 = RB.consts.UNKNOWN_ITEM_FALLBACK, item2 = "|cff9d9d9d|Hitem:3299::::::::20:257::::::|h[Fractured Canine]|h|r",})
+		item1 = items[1], item2 = items[2],})
 	sort(vars.rolls, sortFunc)
 	self:fillTableData()
 end

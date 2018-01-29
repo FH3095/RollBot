@@ -14,6 +14,7 @@ locales/deDE.lua
 Debug.lua
 Core.lua
 Helpers.lua
+Inspect.lua
 Settings.lua
 Console.lua
 RollWindow.lua
