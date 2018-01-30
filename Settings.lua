@@ -51,6 +51,13 @@ function RB:MigrateOptions()
 			showRollersCurrentItems = true,
 		}
 	end
+	if self.db.profile.inspectSettings == nil then
+		self.db.profile.inspectSettings = {
+			doInspect = true,
+			inspectInterval = 7,
+			refreshInterval = 10,
+		}
+	end
 end
 
 function RB:RefreshOptions()
@@ -232,6 +239,41 @@ function RB:GenerateOptions()
 				}
 			},
 			resultWindowSettings = resultWindowOptions,
+			inspectSettings = {
+				name = "Inspect settings",
+				desc = "abc",
+				type = "group",
+				set = "SetInspectOption",
+				get = "GetInspectOption",
+				args = {
+					doInspect = {
+						name = "Do inspection at all?",
+						desc = "Reload required after changing the value.",
+						type = "toggle",
+						tristate = false,
+					},
+					inspectInterval = {
+						type = "range",
+						name = "Inspect player interval (seconds)",
+						desc = "Interal between two insepctions of different players. Reload required after changing the value.",
+						min = 0.1,
+						max = 900,
+						softMin = 3.5,
+						softMax = 15,
+						step = 0.1,
+					},
+					refreshInterval = {
+						type = "range",
+						name = "Refresh player inspections interval (minutes)",
+						desc = "Interal between two insepctions of the same player",
+						min = 1,
+						max = 180,
+						softMin = 3,
+						softMax = 30,
+						step = 1,
+					},
+				},
+			},
 		},
 	}
 	ret.handler = self
@@ -277,4 +319,13 @@ end
 
 function RB:GetResultWindowOption(info)
 	return self.db.profile.resultWindowSettings[info[#info]]
+end
+
+function RB:SetInspectOption(info, value)
+	log("Set inspect option", info[#info], value)
+	self.db.profile.inspectSettings[info[#info]] = value
+end
+
+function RB:GetInspectOption(info)
+	return self.db.profile.inspectSettings[info[#info]]
 end

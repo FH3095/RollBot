@@ -13,8 +13,6 @@ local module = {
 		RAID_MIN = 1,
 		RAID_MAX = 40,
 		CLEANUP_INTERVAL = 30 * 60,
-		INSPECT_INTERVAL = 7,
-		REFRESH_INTERVAL = 10 * 60,
 	},
 }
 
@@ -74,21 +72,9 @@ end
 function module:inspectReady(guid, data, age)
 	log("InspectReady", guid, age)
 	self.vars.cache[guid] = {}
-	self.vars.cache[guid].maxAge = time() + self.consts.REFRESH_INTERVAL
+	self.vars.cache[guid].maxAge = time() + (self.vars.settings.refreshInterval * 60)
 	self.vars.cache[guid].items = data.items
 	log("InspectReady done", guid, self.vars.cache[guid])
-end
-
-function RB:inspectStart()
-	log("InspectStart")
-	libI:SetMaxAge(module.consts.REFRESH_INTERVAL - 1)
-	libI:AddHook(self.consts.ADDON_NAME, "items", function(guid, data, age) module:inspectReady(guid, data, age) end)
-	if module.vars.timerId == nil then
-		module.vars.inspectTimerId = self.timers:ScheduleRepeatingTimer(module.runCheck, module.consts.INSPECT_INTERVAL, module)
-	end
-	if module.vars.cleanupTimerId == nil then
-		module.vars.cleanupTimerId = self.timers:ScheduleRepeatingTimer(module.cleanupCache, module.consts.CLEANUP_INTERVAL, module)
-	end
 end
 
 function RB:inspectGetItemForSlot(player, slot)
@@ -109,4 +95,22 @@ function RB:inspectGetItemForSlot(player, slot)
 	end
 	log("InspectGetItem player, guid, slot, result", player, guid, slot, result)
 	return result
+end
+
+function RB:inspectStart()
+	local settings = self.db.profile.inspectSettings
+	module.vars.settings = settings
+	log("InspectStart", settings.doInspect, settings.inspectInterval, settings.refreshInterval)
+	if not settings.doInspect then
+		return
+	end
+
+	libI:SetMaxAge((settings.refreshInterval * 60) - 1)
+	libI:AddHook(self.consts.ADDON_NAME, "items", function(guid, data, age) module:inspectReady(guid, data, age) end)
+	if module.vars.timerId == nil then
+		module.vars.inspectTimerId = self.timers:ScheduleRepeatingTimer(module.runCheck, settings.inspectInterval, module)
+	end
+	if module.vars.cleanupTimerId == nil then
+		module.vars.cleanupTimerId = self.timers:ScheduleRepeatingTimer(module.cleanupCache, module.consts.CLEANUP_INTERVAL, module)
+	end
 end
