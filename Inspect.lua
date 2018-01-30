@@ -74,7 +74,7 @@ function module:inspectReady(guid, data, age)
 	self.vars.cache[guid] = {}
 	self.vars.cache[guid].maxAge = time() + (self.vars.settings.refreshInterval * 60)
 	self.vars.cache[guid].items = data.items
-	log("InspectReady done", guid, self.vars.cache[guid])
+	log("InspectReady done", guid, table.getn(self.vars.cache[guid]))
 end
 
 function RB:inspectGetItemForSlot(player, slot)
