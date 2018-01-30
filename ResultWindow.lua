@@ -119,7 +119,8 @@ function wnd:createWindow()
 end
 
 function wnd:getItemText(itemLink)
-	if itemLink == nil then
+	local settings = RB.db.profile.resultWindowSettings
+	if itemLink == nil or not settings.showRollersCurrentItems then
 		return ""
 	end
 	local _,_,itemRarity,itemLevel = GetItemInfo(itemLink)
@@ -186,44 +187,6 @@ end
 function wnd:clearRolls()
 	self.vars.rolls = {}
 	self:fillTableData()
-end
-
-local function createWindowText(rolls, label, item)
-	if useTable then
-		return
-	end
-	local inspectDb = nil
-	local rollItemEquipLoc = nil
-	if GExRT ~= nil and GExRT.A.Inspect ~= nil and GExRT.A.Inspect.db.inspectDB ~= nil then
-		inspectDb = GExRT.A.Inspect.db.inspectDB
-	end
-	if item ~= nil then
-		rollItemEquipLoc = select(9, GetItemInfo(item))
-	end
-	local text = ""
-	for _,roll in ipairs(rolls) do
-		text = text .. roll["name"] .. " : " .. roll["roll"] .. " ("
-		if roll["rollType"] ~= nil then
-			text = text .. roll["rollType"] .. " | "
-		end
-		text = text .. roll["rollMin"] .. "-" .. roll["rollMax"] .. ")"
-		if RB.db.profile.showRollersCurrentItems and rollItemEquipLoc ~= "" and
-			inspectDb ~= nil and inspectDb[roll["name"]] ~= nil and inspectDb[roll["name"]].items ~= nil then
-			for _,curItem in pairs(inspectDb[roll["name"]].items) do
-				local _,_,itemRarity,itemLevel,_,_,_,_,itemEquipLoc = GetItemInfo(curItem)
-				if itemEquipLoc == rollItemEquipLoc then
-					local _,_,_,itemCcolor = GetItemQualityColor(itemRarity)
-					text = text .. " |c" .. itemCcolor .. "[GS:" .. itemLevel .. "]|r"
-				end
-			end
-			-- TODO Implement show item. Befor that: Rewrite Result window so that I can display that item...
-		end
-		text = text .. "\n"
-	end
-	-- If label is not initalized, no text update is needed
-	if label ~= nil then
-		label:SetText(text)
-	end
 end
 
 function RB:openResultWindow()

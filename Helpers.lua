@@ -42,7 +42,6 @@ function RB:getOwnRaidInfo()
 	return GetRaidRosterInfo(ownRaidId)
 end
 
--- TODO: Test method
 function RB:isUserMasterLooter(user)
 	local userRaidId = UnitInRaid(user)
 	if userRaidId == nil then

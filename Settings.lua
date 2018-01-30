@@ -48,6 +48,7 @@ function RB:MigrateOptions()
 			item2ColumnSize = 60,
 			rowHeight = 15,
 			numRows = 10,
+			showRollersCurrentItems = true,
 		}
 	end
 end
@@ -153,6 +154,11 @@ function RB:GenerateOptions()
 				softMax	= 40,
 				step	= 1,
 			},
+			showRollersCurrentItems = {
+				name = "Show the items, the rollers are currently wearing",
+				type = "toggle",
+				tristate = false,
+			},
 		},
 	}
 
@@ -200,11 +206,6 @@ function RB:GenerateOptions()
 						type="toggle",
 						tristate = false,
 					},
-					showRollersCurrentItems = {
-						name = "Show the items, the rollers are currently wearing (requires exorsus raid tools)",
-						type = "toggle",
-						tristate = false,
-					}
 				}
 			},
 			rolls = rolls,
@@ -233,7 +234,6 @@ function RB:GenerateOptions()
 			resultWindowSettings = resultWindowOptions,
 		},
 	}
-	--log("Options table", ret)
 	ret.handler = self
 	ret.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 	return ret

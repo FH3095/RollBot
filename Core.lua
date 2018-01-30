@@ -86,6 +86,8 @@ function RB:OnInitialize()
 		UIDropDownMenu_AddButton(info);
 	end
 	hooksecurefunc("ToggleDropDownMenu", toggleDropDownMenuHookFunc)
+
+	self:inspectStart()
 end
 
 function RB:OnEnable()
@@ -100,7 +102,6 @@ function RB:OnEnable()
 			self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
 		end
 	end
-	self:inspectStart()
 end
 
 function RB:comAddonMsg(prefix, message, distribution, sender)
