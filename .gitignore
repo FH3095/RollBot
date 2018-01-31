@@ -1,3 +1,5 @@
 
 # Exlude libs
 libs/Ace3/**
+libs/LibInspect/**
+libs/lib-st/**
