@@ -14,8 +14,8 @@ externals:
     libs/Ace3/AceSerializer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
     libs/Ace3/AceEvent-3.0: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
     libs/Ace3/AceBucket-3.0: https://repos.wowace.com/wow/ace3/trunk/AceBucket-3.0
-    libs/lib-st: https://repos.wowace.com/wow/lib-st/trunk/lib-st
-    libs/LibInspect: https://github.com/scotepi/wow-libinspect.git
+    #libs/lib-st: https://repos.wowace.com/wow/lib-st/trunk
+    #libs/LibInspect: https://github.com/scotepi/wow-libinspect.git/trunk
 enable-nolib-creation: no
 ignore:
   - HowToRelease.txt
