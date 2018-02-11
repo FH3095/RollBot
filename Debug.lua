@@ -6,7 +6,7 @@ IS_DEBUG = true
 
 FH3095Debug = {
 	logFrame = nil,
-	isEnabled = false,
+	enabled = false,
 }
 
 local function objToString(obj)
@@ -27,7 +27,10 @@ local function objToString(obj)
 end
 
 function FH3095Debug.log(str, ...)
-	if (FH3095Debug.logFrame == nil and FH3095Debug.isEnabled) or (not IS_DEBUG and not FH3095Debug.isEnabled) then
+	if not FH3095Debug.isEnabled() then
+		return
+	end
+	if (FH3095Debug.logFrame == nil and FH3095Debug.enabled) or (not IS_DEBUG and not FH3095Debug.enabled) then
 		return
 	end
 	str = str .. ": "
@@ -43,6 +46,13 @@ function FH3095Debug.log(str, ...)
 	end
 end
 
+function FH3095Debug.isEnabled()
+	if (FH3095Debug.enabled and FH3095Debug.logFrame == nil) or (not FH3095Debug.enabled and not IS_DEBUG) then
+		return false
+	end
+	return true
+end
+
 function FH3095Debug.onEnable()
 	for i=1,NUM_CHAT_WINDOWS do
 		local frameName = GetChatWindowInfo(i)
@@ -51,5 +61,5 @@ function FH3095Debug.onEnable()
 			return
 		end
 	end
-	FH3095Debug.isEnabled = true
+	FH3095Debug.enabled = true
 end

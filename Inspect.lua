@@ -2,6 +2,7 @@
 local RB = RollBot
 local libI = LibStub("LibInspect")
 local log = FH3095Debug.log
+local isDebugEnabled = FH3095Debug.isEnabled
 local module = {
 	vars = {
 		cache = {},
@@ -15,6 +16,15 @@ local module = {
 		CLEANUP_INTERVAL = 30 * 60,
 	},
 }
+
+local function guidToName(guid)
+	local _, _, _, _, _, name, realm = GetPlayerInfoByGUID(guid)
+	local ret = name
+	if realm and tostring(realm) ~= "" then
+		ret = name .. "-" .. realm
+	end
+	return ret
+end
 
 function module:inspectPlayer(unitId)
 	if not (UnitIsConnected(unitId) and CanInspect(unitId) and not InCombatLockdown()) then
@@ -40,7 +50,9 @@ function module:cleanupCache()
 	end
 	for guid,_ in pairs(self.vars.cache) do
 		if existingGUIDs[guid] == nil then
-			log("InspectCleanupCache Player removed", guid)
+			if isDebugEnabled() then
+				log("InspectCleanupCache Player removed", guid, guidToName(guid))
+			end
 			self.vars.cache[guid] = nil
 		end
 	end
@@ -73,7 +85,9 @@ function module:inspectReady(guid, data, age)
 	self.vars.cache[guid] = {}
 	self.vars.cache[guid].maxAge = time() + (self.vars.settings.refreshInterval * 60)
 	self.vars.cache[guid].items = data.items
-	log("InspectReady done", guid, age, self.vars.cache[guid] ~= nil)
+	if isDebugEnabled then
+		log("InspectReady done", guid, guidToName(guid), age, self.vars.cache[guid] ~= nil)
+	end
 end
 
 function RB:inspectGetItemForSlot(player, slot)
