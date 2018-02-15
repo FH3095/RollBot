@@ -43,7 +43,7 @@ function RB:MigrateOptions()
 		self.db.profile.resultWindowSettings = {
 			nameColumnSize = 100,
 			rollColumnSize = 35,
-			rollTypeColumnSize = 100,
+			rollTypeColumnSize = 200,
 			item1ColumnSize = 60,
 			item2ColumnSize = 60,
 			rowHeight = 15,
