@@ -2,15 +2,14 @@
 local ADDON_NAME = "RollBot"
 local VERSION = "@project-version@"
 local ADDON_MSGS = {
-	lootOptionsReq = ADDON_NAME .. "1",
-	lootOptionsResp = ADDON_NAME .. "2",
+	-- Removed request and response to raid
 	startRoll =  ADDON_NAME .. "3",
 	getVersionReq = ADDON_NAME .. "4",
 	getVersionResp = ADDON_NAME .. "5",
 }
 local log = FH3095Debug.log
 local RB = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME)
-RollBot = RB
+_G.RollBot = RB
 
 RB.consts = {}
 RB.consts.ADDON_MSGS = ADDON_MSGS
@@ -18,19 +17,20 @@ RB.consts.ADDON_NAME = ADDON_NAME
 RB.consts.VERSION = VERSION
 RB.consts.WINDOW_HEIGHT = "WndHeight"
 RB.consts.WINDOW_WIDTH = "WndWidth"
-RB.consts.REPOST_SETTINGS_AFTER_GROUP_CHANGE_WAIT_TIME = 3
-RB.consts.REQUEST_SETTINGS_AFTER_GROUP_CHANGE_WAIT_TIME = 5
 RB.consts.COLORS = {
 	HIGHLIGHT = "|cFF00FFFF",
 }
 RB.consts.ADDON_NAME_COLORED = RB.consts.COLORS.HIGHLIGHT .. RB.consts.ADDON_NAME .. "|r"
 RB.consts.UNKNOWN_ITEM_FALLBACK = "|cffffffff|Hitem:6948::::::::110:257::::::|h[Ruhestein]|h|r"
+RB.consts.UNKNOWN_ROLLS_FALLBACK = {[1] = {name = "Unknown", roll = 100}}
 
 function RB:OnInitialize()
 	self.vars = {
-		masterLooter = nil,
-		lastRollItem = self.consts.UNKNOWN_ITEM_FALLBACK,
-		rolls = {},
+		lastRoll = {
+			item = self.consts.UNKNOWN_ITEM_FALLBACK,
+			rolls = self.consts.UNKNOWN_ROLLS_FALLBACK,
+			rollTime = 30,
+		},
 		versions = {},
 		rollWindowVars = {
 			guiFrame = nil,
@@ -61,8 +61,6 @@ function RB:OnInitialize()
 	self.events:RegisterEvent("CHAT_MSG_SYSTEM", function(_, msg) RB:eventChatMsgSystem(msg) end)
 
 	self.buckets = LibStub("AceBucket-3.0")
-	self.buckets:RegisterBucketEvent("GROUP_ROSTER_UPDATE", self.consts.REPOST_SETTINGS_AFTER_GROUP_CHANGE_WAIT_TIME,
-		function() RB:eventGroupRosterUpdate() end)
 
 	self.console = LibStub("AceConsole-3.0")
 	local consoleCommandFunc = function(msg, editbox)
@@ -92,16 +90,6 @@ end
 
 function RB:OnEnable()
 	FH3095Debug.onEnable()
-	if self:isMasterLooterActive() then
-		if self:isMyselfMasterLooter() then
-			log("OnEnable: Currently in Raid -> Init and send loot options")
-			self.vars.rolls = self:convertOwnSettingsToRaidSettings()
-			self:sendMasterLooterSettings()
-		else
-			log("OnEnable: Currently in Raid -> Request loot options")
-			self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
-		end
-	end
 end
 
 function RB:comAddonMsg(prefix, message, distribution, sender)
@@ -109,32 +97,20 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 		return
 	end
 	log("ComAddonMsg", prefix, sender)
-	if prefix == ADDON_MSGS.lootOptionsReq then
-		if not self:isMyselfMasterLooter() then
+	if prefix == ADDON_MSGS.startRoll then
+		if not self:isUserMasterLooter(sender) then
+			log("Received StartRoll but user is not masterlooter", sender)
 			return
 		end
-		self:sendMasterLooterSettings()
-	elseif prefix == ADDON_MSGS.lootOptionsResp then
+
 		local success, data = self.serializer:Deserialize(message)
 		if not success then
 			self:consolePrintError("Cant deserialize roll data: %s", data)
 			return
 		end
-		if not self:isUserMasterLooter(sender) then
-			log("Received LootOptions but user is not masterlooter", sender, data)
-			return
-		end
 
-		log("ComAddonMsg: New MasterLooter options", data, self.vars.masterLooter, self:getMasterLooter())
-		self.vars.masterLooter = self:getMasterLooter()
-		self.vars.rolls = data
-	elseif prefix == ADDON_MSGS.startRoll then
-		if not self:isUserMasterLooter(sender) then
-			log("Received StartRoll but user is not masterlooter", sender, message)
-			return
-		end
-		log("ComAddonMsg start roll", sender, message)
-		self:openRollWindow(message, true)
+		log("ComAddonMsg start roll", sender, data)
+		self:openRollWindow(data.item, data.rolls, data.rollTime, true)
 		-- Clear results (also if player opened window via cmd)
 		self:resultClearRolls()
 		if self.db.profile.openResultWindowOnStartRollByOtherPM and not self:isMyselfMasterLooter() then
@@ -150,24 +126,6 @@ function RB:comAddonMsg(prefix, message, distribution, sender)
 	end
 end
 
-function RB:checkMasterLooterChanged()
-	if self.vars.masterLooter == self:getMasterLooter() then
-		return
-	end
-	log("CheckMasterLooterChanged: Master looter changed, request loot options")
-	self.com:SendCommMessage(ADDON_MSGS.lootOptionsReq, "", "RAID")
-end
-
-function RB:eventGroupRosterUpdate()
-	if self:isMyselfMasterLooter() then
-		self.vars.rolls = self:convertOwnSettingsToRaidSettings()
-		log("GroupRosterUpdate: Im now the master looter")
-		self:sendMasterLooterSettings()
-	else
-		self:scheduleTimer(self.checkMasterLooterChanged, self.consts.REQUEST_SETTINGS_AFTER_GROUP_CHANGE_WAIT_TIME)
-	end
-end
-
 function RB:eventChatMsgSystem(msg)
 	local rollUser, roll, rollMin, rollMax = msg:match(self.l['ROLL_REGEX'])
 	if (nil == rollUser) then
@@ -179,7 +137,7 @@ function RB:eventChatMsgSystem(msg)
 	end
 	log("EventChatMsgSystem, roll found", msg)
 	local rollType = nil
-	for _,roll in ipairs(self.vars.rolls) do
+	for _,roll in ipairs(self.vars.lastRoll.rolls) do
 		if tonumber(rollMax) == roll["roll"] then
 			rollType = roll["name"]
 			break

@@ -41,11 +41,11 @@ local function createCounterText(frame)
 	local vars = RB.vars.rollTimeWindowVars
 
 	local text = RB.gui:Create("Label")
-	text:SetText(RB.vars.rolls.rollTime)
+	text:SetText(RB.vars.lastRoll.rollTime)
 	text:SetFontObject(GameFontNormalLarge)
 	frame:AddChild(text)
 
-	vars.timerCounter = RB.vars.rolls.rollTime
+	vars.timerCounter = RB.vars.lastRoll.rollTime
 	vars.timerLabel = text
 	vars.rollTimeWindow = frame
 
@@ -53,7 +53,7 @@ local function createCounterText(frame)
 end
 
 function RB:openRollTimerWindowAndStart()
-	if self.vars.rolls.rollTime <= 0 then
+	if self.vars.lastRoll.rollTime <= 0 then
 		return
 	end
 	log("StartRollTimer")

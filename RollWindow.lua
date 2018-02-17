@@ -19,7 +19,7 @@ local function cancelRollWindowTimer()
 	end
 end
 
-local function createRollWindowChilds(frame, itemLink, startTimer)
+local function createRollWindowChilds(frame, itemLink, rolls, rollTime, startTimer)
 	local icon = RB.gui:Create("Icon")
 	-- Usually dont use .frame, but I treat this as an exception
 	icon:SetCallback("OnEnter", function()
@@ -41,10 +41,10 @@ local function createRollWindowChilds(frame, itemLink, startTimer)
 	rollTimeGroup:SetTitle(RB.l['ROLL_TIME_LEFT'])
 	rollTimeGroup:SetRelativeWidth(1.0)
 	local rollTimeText = RB.gui:Create("Label")
-	if startTimer and RB.vars.rolls.rollTime > 0 then
-		rollTimeText:SetText(tostring(RB.vars.rolls.rollTime))
+	if startTimer and rollTime > 0 then
+		rollTimeText:SetText(tostring(rollTime))
 		cancelRollWindowTimer()
-		RB.vars.rollWindowVars["timerCounter"] = RB.vars.rolls.rollTime
+		RB.vars.rollWindowVars["timerCounter"] = rollTime
 		RB.vars.rollWindowVars["rollTimeText"] = rollTimeText
 		local function timerFunc()
 			RB.vars.rollWindowVars["timerCounter"] = RB.vars.rollWindowVars["timerCounter"] - 1
@@ -64,7 +64,7 @@ local function createRollWindowChilds(frame, itemLink, startTimer)
 	frame:AddChild(rollTimeGroup)
 
 	local numButtons = 0
-	for _,roll in ipairs(RB.vars.rolls) do
+	for _,roll in ipairs(rolls) do
 		local btn = RB.gui:Create("Button")
 		btn:SetText(roll["name"])
 		btn:SetCallback("OnClick", function()
@@ -78,19 +78,28 @@ local function createRollWindowChilds(frame, itemLink, startTimer)
 	frame:SetHeight(28+64+20+40+numButtons*25+20)
 end
 
-function RB:openRollWindow(itemLink, justStarted)
-	log("OpenRollWindow", itemLink)
+function RB:openRollWindow(itemLink, rolls, rollTime, justStarted)
+	log("OpenRollWindow", itemLink, rolls, rollTime, justStarted)
 	if itemLink == nil then
-		itemLink = self.vars.lastRollItem
+		itemLink = self.vars.lastRoll.item
 	end
-	self.vars.lastRollItem = itemLink
+	self.vars.lastRoll.item = itemLink
+	if rolls == nil then
+		rolls = self.vars.lastRoll.rolls
+	end
+	self.vars.lastRoll.rolls = rolls
+	if rollTime == nil then
+		rollTime = self.vars.lastRoll.rollTime
+	end
+	self.vars.lastRoll.rollTime = rollTime
+
 
 	local frame = self.vars.rollWindowVars["guiFrame"]
 	if frame ~= nil then
 		cancelRollWindowTimer()
 		frame:Hide()
 		frame:ReleaseChildren()
-		createRollWindowChilds(frame, itemLink, justStarted)
+		createRollWindowChilds(frame, itemLink, rolls, rollTime, justStarted)
 		frame:Show()
 		return
 	end
@@ -110,5 +119,5 @@ function RB:openRollWindow(itemLink, justStarted)
 	self:restoreWindowPos(frame, self.db.char.windowPositions.rollWindow, DEFAULT_POS)
 	self.vars.rollWindowVars["guiFrame"] = frame
 
-	createRollWindowChilds(frame, itemLink, justStarted)
+	createRollWindowChilds(frame, itemLink, rolls, rollTime, justStarted)
 end

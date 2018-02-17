@@ -54,18 +54,11 @@ function RB:isUserMasterLooter(user)
 	return false
 end
 
-function RB:sendMasterLooterSettings()
-	log("SendMasterLooterSettings")
-	local data = self.serializer:Serialize(self.vars.rolls)
-	self.com:SendCommMessage(self.consts.ADDON_MSGS.lootOptionsResp, data, "RAID")
-end
-
 function RB:convertOwnSettingsToRaidSettings()
 	local ret = {}
 	for i = 1,self.db.profile.numRollOptions do
 		ret[i] = self.db.profile.rolls[i]
 	end
-	ret["rollTime"] = self.db.profile.rollTime
 	return ret
 end
 
@@ -93,7 +86,7 @@ function RB:startRoll(itemLink)
 		self:consolePrintError("Invalid item link: %s", itemLink)
 		return
 	end
-	local success, ownRank = self:getOwnRaidInfo()
+	local success = self:getOwnRaidInfo()
 	if success == nil then
 		self:consolePrintError("Not in raid")
 		return
@@ -103,9 +96,13 @@ function RB:startRoll(itemLink)
 		return
 	end
 
+	local rolls = self:convertOwnSettingsToRaidSettings()
+	local msg = {rolls = rolls, item = itemLink, rollTime = self.db.profile.rollTime}
+	local data = self.serializer:Serialize(msg)
+
 	self:openResultWindow()
 	self:resultClearRolls()
-	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, itemLink, "RAID")
+	self.com:SendCommMessage(self.consts.ADDON_MSGS.startRoll, data, "RAID")
 	self:sendChatMessage(self.db.profile.rollText:format(itemLink, self.db.profile.rollTime))
 	self:openRollTimerWindowAndStart()
 end

@@ -193,7 +193,7 @@ function RB:openResultWindow()
 end
 
 function RB:resultAddRoll(name, roll, rollMin, rollMax, rollType)
-	wnd:addRoll(name, roll, rollMin, rollMax, rollType, self.vars.lastRollItem)
+	wnd:addRoll(name, roll, rollMin, rollMax, rollType, self.vars.lastRoll.item)
 end
 
 function RB:resultClearRolls()
