@@ -23,6 +23,47 @@ RB.consts.COLORS = {
 RB.consts.ADDON_NAME_COLORED = RB.consts.COLORS.HIGHLIGHT .. RB.consts.ADDON_NAME .. "|r"
 RB.consts.UNKNOWN_ITEM_FALLBACK = "|cffffffff|Hitem:6948::::::::110:257::::::|h[Ruhestein]|h|r"
 RB.consts.UNKNOWN_ROLLS_FALLBACK = {[1] = {name = "Unknown", roll = 100}}
+RB.consts.TOKENS = {
+	-- -- Antorus -- --
+	-- Cloak
+	[152515] = { classes = {1,3,7,10}, slot = "INVTYPE_CLOAK"}, -- Warrior, Hunter, Shaman, Monk
+	[152516] = { classes = {2,5,9,12}, slot = "INVTYPE_CLOAK"}, -- Paladin, Priest, Warlock, Demon Hunter
+	[152517] = { classes = {4,6,8,11}, slot = "INVTYPE_CLOAK"}, -- Rogue, Deathknight, Mage, Druid
+	-- Chest
+	[152520] = { classes = {1,3,7,10}, slot = "INVTYPE_ROBE"}, -- Warrior, Hunter, Shaman, Monk
+	[152519] = { classes = {2,5,9,12}, slot = "INVTYPE_ROBE"}, -- Paladin, Priest, Warlock, Demon Hunter
+	[152518] = { classes = {4,6,8,11}, slot = "INVTYPE_ROBE"}, -- Rogue, Deathknight, Mage, Druid
+	-- Gauntlets
+	[152523] = { classes = {1,3,7,10}, slot = "INVTYPE_HAND"}, -- Warrior, Hunter, Shaman, Monk
+	[152522] = { classes = {2,5,9,12}, slot = "INVTYPE_HAND"}, -- Paladin, Priest, Warlock, Demon Hunter
+	[152521] = { classes = {4,6,8,11}, slot = "INVTYPE_HAND"}, -- Rogue, Deathknight, Mage, Druid
+	-- Helm
+	[152526] = { classes = {1,3,7,10}, slot = "INVTYPE_HEAD"}, -- Warrior, Hunter, Shaman, Monk
+	[152525] = { classes = {2,5,9,12}, slot = "INVTYPE_HEAD"}, -- Paladin, Priest, Warlock, Demon Hunter
+	[152524] = { classes = {4,6,8,11}, slot = "INVTYPE_HEAD"}, -- Rogue, Deathknight, Mage, Druid
+	-- Leggings
+	[152529] = { classes = {1,3,7,10}, slot = "INVTYPE_LEGS"}, -- Warrior, Hunter, Shaman, Monk
+	[152528] = { classes = {2,5,9,12}, slot = "INVTYPE_LEGS"}, -- Paladin, Priest, Warlock, Demon Hunter
+	[152527] = { classes = {4,6,8,11}, slot = "INVTYPE_LEGS"}, -- Rogue, Deathknight, Mage, Druid
+	-- Shoulders
+	[152532] = { classes = {1,3,7,10}, slot = "INVTYPE_SHOULDER"}, -- Warrior, Hunter, Shaman, Monk
+	[152531] = { classes = {2,5,9,12}, slot = "INVTYPE_SHOULDER"}, -- Paladin, Priest, Warlock, Demon Hunter
+	[152530] = { classes = {4,6,8,11}, slot = "INVTYPE_SHOULDER"}, -- Rogue, Deathknight, Mage, Druid
+}
+RB.consts.ITEM_TYPE_ARMOR = 4
+RB.consts.ITEM_SUBTYPES = {
+	CLOTH = 1,
+	LEATHER = 2,
+	MAIL = 3,
+	PLATE = 4,
+}
+RB.consts.ITEM_SUBTYPES_TO_CLASS = {
+	[1] = {5,8,9},
+	[2] = {4,10,11,12},
+	[3] = {3,7},
+	[4] = {1,2,6},
+}
+
 
 function RB:OnInitialize()
 	self.vars = {

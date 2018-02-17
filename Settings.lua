@@ -58,6 +58,9 @@ function RB:MigrateOptions()
 			refreshInterval = 10,
 		}
 	end
+	if self.db.profile.onlyShowRollsForRelevantItems == nil then
+		self.db.profile.onlyShowRollsForRelevantItems = true
+	end
 end
 
 function RB:RefreshOptions()
@@ -210,7 +213,13 @@ function RB:GenerateOptions()
 					},
 					closeRollWindowAfterRollTime = {
 						name = "Automatically close roll window after roll time is expired",
-						type="toggle",
+						type = "toggle",
+						tristate = false,
+					},
+					onlyShowRollsForRelevantItems = {
+						name = "Only show roll window for relevant items",
+						desc = "Only show roll window when armor type is relevant for you.",
+						type = "toggle",
 						tristate = false,
 					},
 				}

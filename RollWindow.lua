@@ -93,6 +93,10 @@ function RB:openRollWindow(itemLink, rolls, rollTime, justStarted)
 	end
 	self.vars.lastRoll.rollTime = rollTime
 
+	if self.db.profile.onlyShowRollsForRelevantItems and not self:isItemRelevantForMe(itemLink) then
+		self:consolePrintMessage("Automatically passed on %s", itemLink)
+		return
+	end
 
 	local frame = self.vars.rollWindowVars["guiFrame"]
 	if frame ~= nil then

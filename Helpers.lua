@@ -114,6 +114,44 @@ function RB:isTableEmpty(tbl)
 	return true
 end
 
+function RB:tableContains(tbl, value)
+	for _,v in pairs(tbl) do
+		if v == value then
+			return true
+		end
+	end
+	return false
+end
+
+function RB:isItemRelevantForMe(itemLink)
+	local _,_,ownClassId = UnitClass("player")
+	local itemId,_,_,_,_,itemTypeId,itemSubtypeId = GetItemInfoInstant(itemLink)
+	log("IsItemRelevantForMe", itemLink, itemTypeId, itemSubtypeId, ownClassId)
+	if self.consts.TOKENS[itemId] ~= nil then
+		if self:tableContains(self.consts.TOKENS[itemId].classes, ownClassId) then
+			return true
+		else
+			log("IsItemRelevantForMe: Token and not relevant")
+			return false
+		end
+	end
+
+	if not IsEquippableItem(itemLink) then
+		return true
+	end
+
+	if itemTypeId == self.consts.ITEM_TYPE_ARMOR and self:tableContains(self.consts.ITEM_SUBTYPES, itemSubtypeId) then
+		if self:tableContains(self.consts.ITEM_SUBTYPES_TO_CLASS[itemSubtypeId], ownClassId) then
+			return true
+		else
+			log("IsItemRelevantForMe: Armor and not relevant")
+			return false
+		end
+	end
+
+	return true
+end
+
 function RB:getWindowPos(frame, includeSize)
 	local result = {}
 
