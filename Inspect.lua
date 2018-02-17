@@ -17,29 +17,29 @@ local module = {
 		TOKENS = {
 			-- -- Antorus -- --
 			-- Cloak
-			[152515] = { classes = {1,3,7,10}, slot = 15}, -- Warrior, Hunter, Shaman, Monk
-			[152516] = { classes = {2,5,9,12}, slot = 15}, -- Paladin, Priest, Warlock, Demon Hunter
-			[152517] = { classes = {4,6,8,11}, slot = 15}, -- Rogue, Deathknight, Mage, Druid
+			[152515] = { classes = {1,3,7,10}, slot = "INVTYPE_CLOAK"}, -- Warrior, Hunter, Shaman, Monk
+			[152516] = { classes = {2,5,9,12}, slot = "INVTYPE_CLOAK"}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152517] = { classes = {4,6,8,11}, slot = "INVTYPE_CLOAK"}, -- Rogue, Deathknight, Mage, Druid
 			-- Chest
-			[152520] = { classes = {1,3,7,10}, slot = 5}, -- Warrior, Hunter, Shaman, Monk
-			[152519] = { classes = {2,5,9,12}, slot = 5}, -- Paladin, Priest, Warlock, Demon Hunter
-			[152518] = { classes = {4,6,8,11}, slot = 5}, -- Rogue, Deathknight, Mage, Druid
+			[152520] = { classes = {1,3,7,10}, slot = "INVTYPE_ROBE"}, -- Warrior, Hunter, Shaman, Monk
+			[152519] = { classes = {2,5,9,12}, slot = "INVTYPE_ROBE"}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152518] = { classes = {4,6,8,11}, slot = "INVTYPE_ROBE"}, -- Rogue, Deathknight, Mage, Druid
 			-- Gauntlets
-			[152523] = { classes = {1,3,7,10}, slot = 10}, -- Warrior, Hunter, Shaman, Monk
-			[152522] = { classes = {2,5,9,12}, slot = 10}, -- Paladin, Priest, Warlock, Demon Hunter
-			[152521] = { classes = {4,6,8,11}, slot = 10}, -- Rogue, Deathknight, Mage, Druid
+			[152523] = { classes = {1,3,7,10}, slot = "INVTYPE_HAND"}, -- Warrior, Hunter, Shaman, Monk
+			[152522] = { classes = {2,5,9,12}, slot = "INVTYPE_HAND"}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152521] = { classes = {4,6,8,11}, slot = "INVTYPE_HAND"}, -- Rogue, Deathknight, Mage, Druid
 			-- Helm
-			[152526] = { classes = {1,3,7,10}, slot = 1}, -- Warrior, Hunter, Shaman, Monk
-			[152525] = { classes = {2,5,9,12}, slot = 1}, -- Paladin, Priest, Warlock, Demon Hunter
-			[152524] = { classes = {4,6,8,11}, slot = 1}, -- Rogue, Deathknight, Mage, Druid
+			[152526] = { classes = {1,3,7,10}, slot = "INVTYPE_HEAD"}, -- Warrior, Hunter, Shaman, Monk
+			[152525] = { classes = {2,5,9,12}, slot = "INVTYPE_HEAD"}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152524] = { classes = {4,6,8,11}, slot = "INVTYPE_HEAD"}, -- Rogue, Deathknight, Mage, Druid
 			-- Leggings
-			[152529] = { classes = {1,3,7,10}, slot = 7}, -- Warrior, Hunter, Shaman, Monk
-			[152528] = { classes = {2,5,9,12}, slot = 7}, -- Paladin, Priest, Warlock, Demon Hunter
-			[152527] = { classes = {4,6,8,11}, slot = 7}, -- Rogue, Deathknight, Mage, Druid
+			[152529] = { classes = {1,3,7,10}, slot = "INVTYPE_LEGS"}, -- Warrior, Hunter, Shaman, Monk
+			[152528] = { classes = {2,5,9,12}, slot = "INVTYPE_LEGS"}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152527] = { classes = {4,6,8,11}, slot = "INVTYPE_LEGS"}, -- Rogue, Deathknight, Mage, Druid
 			-- Shoulders
-			[152532] = { classes = {1,3,7,10}, slot = 3}, -- Warrior, Hunter, Shaman, Monk
-			[152531] = { classes = {2,5,9,12}, slot = 3}, -- Paladin, Priest, Warlock, Demon Hunter
-			[152530] = { classes = {4,6,8,11}, slot = 3}, -- Rogue, Deathknight, Mage, Druid
+			[152532] = { classes = {1,3,7,10}, slot = "INVTYPE_SHOULDER"}, -- Warrior, Hunter, Shaman, Monk
+			[152531] = { classes = {2,5,9,12}, slot = "INVTYPE_SHOULDER"}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152530] = { classes = {4,6,8,11}, slot = "INVTYPE_SHOULDER"}, -- Rogue, Deathknight, Mage, Druid
 
 		}
 	},
