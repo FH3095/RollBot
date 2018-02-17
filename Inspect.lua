@@ -14,6 +14,7 @@ local module = {
 		RAID_MIN = 1,
 		RAID_MAX = 40,
 		CLEANUP_INTERVAL = 30 * 60,
+		PRIMARY_WEAPON_SLOT = 16,
 		TOKENS = {
 			-- -- Antorus -- --
 			-- Cloak
@@ -40,7 +41,6 @@ local module = {
 			[152532] = { classes = {1,3,7,10}, slot = "INVTYPE_SHOULDER"}, -- Warrior, Hunter, Shaman, Monk
 			[152531] = { classes = {2,5,9,12}, slot = "INVTYPE_SHOULDER"}, -- Paladin, Priest, Warlock, Demon Hunter
 			[152530] = { classes = {4,6,8,11}, slot = "INVTYPE_SHOULDER"}, -- Rogue, Deathknight, Mage, Druid
-
 		}
 	},
 }
@@ -118,6 +118,25 @@ function module:inspectReady(guid, data, age)
 	end
 end
 
+function module:getPlayerRelics(playerGuid, newItem)
+	local result = {}
+	local newItemId = GetItemInfoInstant(newItem)
+	local _,_,newRelicType = C_ArtifactUI.GetRelicInfoByItemID(newItemId)
+	local weaponItemLink = self.vars.cache[playerGuid].items[self.consts.PRIMARY_WEAPON_SLOT]
+	for i=1,4 do
+		local _,curRelicLink = GetItemGem(weaponItemLink, i) -- Yes, a relic is a gem
+		if curRelicLink ~= nil then
+			local curRelicId = GetItemInfoInstant(curRelicLink)
+			local _,_,curRelicType = C_ArtifactUI.GetRelicInfoByItemID(curRelicId)
+			if newRelicType == curRelicType then
+				tinsert(result, curRelicLink)
+			end
+		end
+	end
+
+	return result
+end
+
 function RB:inspectGetWearingItemForPlayer(player, newItem)
 	local newItemId,_,_,newItemLoc = GetItemInfoInstant(newItem)
 	local guid = UnitGUID(player)
@@ -128,6 +147,10 @@ function RB:inspectGetWearingItemForPlayer(player, newItem)
 
 	if module.consts.TOKENS[newItemId] ~= nil then
 		newItemLoc = module.consts.TOKENS[newItemId].slot
+	end
+
+	if IsArtifactRelicItem(newItem) then
+		return module:getPlayerRelics(guid,newItem)
 	end
 
 	for i=INVSLOT_FIRST_EQUIPPED,INVSLOT_LAST_EQUIPPED do
