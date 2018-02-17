@@ -14,6 +14,34 @@ local module = {
 		RAID_MIN = 1,
 		RAID_MAX = 40,
 		CLEANUP_INTERVAL = 30 * 60,
+		TOKENS = {
+			-- -- Antorus -- --
+			-- Cloak
+			[152515] = { classes = {1,3,7,10}, slot = 15}, -- Warrior, Hunter, Shaman, Monk
+			[152516] = { classes = {2,5,9,12}, slot = 15}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152517] = { classes = {4,6,8,11}, slot = 15}, -- Rogue, Deathknight, Mage, Druid
+			-- Chest
+			[152520] = { classes = {1,3,7,10}, slot = 5}, -- Warrior, Hunter, Shaman, Monk
+			[152519] = { classes = {2,5,9,12}, slot = 5}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152518] = { classes = {4,6,8,11}, slot = 5}, -- Rogue, Deathknight, Mage, Druid
+			-- Gauntlets
+			[152523] = { classes = {1,3,7,10}, slot = 10}, -- Warrior, Hunter, Shaman, Monk
+			[152522] = { classes = {2,5,9,12}, slot = 10}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152521] = { classes = {4,6,8,11}, slot = 10}, -- Rogue, Deathknight, Mage, Druid
+			-- Helm
+			[152526] = { classes = {1,3,7,10}, slot = 1}, -- Warrior, Hunter, Shaman, Monk
+			[152525] = { classes = {2,5,9,12}, slot = 1}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152524] = { classes = {4,6,8,11}, slot = 1}, -- Rogue, Deathknight, Mage, Druid
+			-- Leggings
+			[152529] = { classes = {1,3,7,10}, slot = 7}, -- Warrior, Hunter, Shaman, Monk
+			[152528] = { classes = {2,5,9,12}, slot = 7}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152527] = { classes = {4,6,8,11}, slot = 7}, -- Rogue, Deathknight, Mage, Druid
+			-- Shoulders
+			[152532] = { classes = {1,3,7,10}, slot = 3}, -- Warrior, Hunter, Shaman, Monk
+			[152531] = { classes = {2,5,9,12}, slot = 3}, -- Paladin, Priest, Warlock, Demon Hunter
+			[152530] = { classes = {4,6,8,11}, slot = 3}, -- Rogue, Deathknight, Mage, Druid
+
+		}
 	},
 }
 
@@ -90,23 +118,28 @@ function module:inspectReady(guid, data, age)
 	end
 end
 
-function RB:inspectGetItemForSlot(player, slot)
+function RB:inspectGetWearingItemForPlayer(player, newItem)
+	local newItemId,_,_,newItemLoc = GetItemInfoInstant(newItem)
 	local guid = UnitGUID(player)
 	local result = {}
 	if module.vars.cache[guid] == nil or module.vars.cache[guid].items == nil then
 		return result
 	end
 
+	if module.consts.TOKENS[newItemId] ~= nil then
+		newItemLoc = module.consts.TOKENS[newItemId].slot
+	end
+
 	for i=INVSLOT_FIRST_EQUIPPED,INVSLOT_LAST_EQUIPPED do
 		local itemLink = module.vars.cache[guid].items[i]
 		if itemLink ~= nil then
-			local _,_,_,itemEquipLoc = GetItemInfoInstant(itemLink)
-			if itemEquipLoc == slot then
+			local _,_,_,curItemLoc = GetItemInfoInstant(itemLink)
+			if curItemLoc == newItemLoc then
 				tinsert(result, itemLink)
 			end
 		end
 	end
-	log("InspectGetItem player, guid, slot, result", player, guid, slot, result)
+	log("InspectGetItem player, guid, newItem, newItemLoc, result", player, guid, newItem, newItemLoc, result)
 	return result
 end
 

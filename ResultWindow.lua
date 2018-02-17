@@ -176,8 +176,7 @@ function wnd:addRoll(name, roll, rollMin, rollMax, rollType, forItem)
 		end
 	end
 
-	local _,_,_,itemEquipLoc = GetItemInfoInstant(forItem)
-	local items = RB:inspectGetItemForSlot(name, itemEquipLoc)
+	local items = RB:inspectGetWearingItemForPlayer(name, forItem)
 	tinsert(vars.rolls, {name=name, roll=roll, rollMin=rollMin, rollMax=rollMax, rollType = rollType,
 		item1 = items[1], item2 = items[2],})
 	sort(vars.rolls, sortFunc)
