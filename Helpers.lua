@@ -137,11 +137,6 @@ function RB:isItemRelevantForMe(itemLink)
 		end
 	end
 
-	if not IsEquippableItem(itemLink) then
-		log("IsItemRelevantForMe: Relevant: Not equippable")
-		return true
-	end
-
 	if itemTypeId == self.consts.ITEM_TYPE_ARMOR and self:tableContains(self.consts.ITEM_SUBTYPES, itemSubtypeId) then
 		if self:tableContains(self.consts.ITEM_SUBTYPES_TO_CLASS[itemSubtypeId], ownClassId) then
 			log("IsItemRelevantForMe: Relevant: Armor")
@@ -150,6 +145,11 @@ function RB:isItemRelevantForMe(itemLink)
 			log("IsItemRelevantForMe: NOT relevant: Armor")
 			return false
 		end
+	end
+
+	if not IsEquippableItem(itemLink) then
+		log("IsItemRelevantForMe: Relevant: Not equippable")
+		return true
 	end
 
 	log("IsItemRelevantForMe: Relevant: No decision")
