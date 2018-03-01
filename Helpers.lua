@@ -129,26 +129,30 @@ function RB:isItemRelevantForMe(itemLink)
 	log("IsItemRelevantForMe", itemLink, itemTypeId, itemSubtypeId, ownClassId)
 	if self.consts.TOKENS[itemId] ~= nil then
 		if self:tableContains(self.consts.TOKENS[itemId].classes, ownClassId) then
+			log("IsItemRelevantForMe: Relevant: Token")
 			return true
 		else
-			log("IsItemRelevantForMe: Token and not relevant")
+			log("IsItemRelevantForMe: NOT relevant: Token")
 			return false
 		end
 	end
 
 	if not IsEquippableItem(itemLink) then
+		log("IsItemRelevantForMe: Relevant: Not equippable")
 		return true
 	end
 
 	if itemTypeId == self.consts.ITEM_TYPE_ARMOR and self:tableContains(self.consts.ITEM_SUBTYPES, itemSubtypeId) then
 		if self:tableContains(self.consts.ITEM_SUBTYPES_TO_CLASS[itemSubtypeId], ownClassId) then
+			log("IsItemRelevantForMe: Relevant: Armor")
 			return true
 		else
-			log("IsItemRelevantForMe: Armor and not relevant")
+			log("IsItemRelevantForMe: NOT relevant: Armor")
 			return false
 		end
 	end
 
+	log("IsItemRelevantForMe: Relevant: No decision")
 	return true
 end
 
